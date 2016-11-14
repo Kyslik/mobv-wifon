@@ -12,9 +12,9 @@ import java.util.List;
 /**
  * Created by miroslav.adamec on 13.11.2016.
  */
-public class AddWifiArrayAdapter extends ArrayAdapter<String> {
+public class AddWifiArrayAdapter extends ArrayAdapter<AccessPoint> {
 
-    AddWifiArrayAdapter(Context context, List<String> wifi) {
+    AddWifiArrayAdapter(Context context, List<AccessPoint> wifi) {
         super(context, R.layout.list_item, wifi );
     }
 
@@ -24,9 +24,11 @@ public class AddWifiArrayAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View customView = inflater.inflate(R.layout.list_item, parent, false);
 
-        String wifiInfo = getItem(position);
-        TextView wifiTextView = (TextView) customView.findViewById(R.id.summary);
-        wifiTextView.setText(wifiInfo);
+        AccessPoint wifiInfo = getItem(position);
+        TextView ssidTextView = (TextView) customView.findViewById(R.id.ssid);
+        ssidTextView.setText(wifiInfo.ssid);
+        TextView bssidTextView = (TextView) customView.findViewById(R.id.bssid);
+        bssidTextView.setText(wifiInfo.bssid);
         return customView;
     }
 

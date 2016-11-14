@@ -14,22 +14,29 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    String[] testArr = {"text1", "text2", "text3"};
+    //String[] testArr = {"text1", "text2", "text3"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        List<String> testArr = Arrays.asList("sup1", "sup2", "sup3");
+        List<AccessPoint> testArr = new ArrayList<AccessPoint>();
+        AccessPoint temp1 = new AccessPoint();
+        temp1.bssid="nejakeBssid";
+        temp1.ssid="nejakeSsid";
+        testArr.add(temp1);
+        testArr.add(temp1);
+        testArr.add(temp1);
+
         //List<String> testArr = new ArrayList<String>();
 
-        WifiManager mainWifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        /*WifiManager mainWifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         mainWifi.startScan();
         List<ScanResult> wifiList =mainWifi.getScanResults();
         for(int i = 0; i < wifiList.size(); i++){
             testArr.add((wifiList.get(i)).toString());
-        }
+        }*/
 
 
         ListAdapter wifiAdapter = new AddWifiArrayAdapter(this, testArr);
