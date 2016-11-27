@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity{
 
     public void exampleImgButton(View view) {
         Toast.makeText(this,"location", Toast.LENGTH_SHORT).show();
-
     }
 
 }

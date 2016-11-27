@@ -13,6 +13,8 @@
         android:paddingTop="1dp"/>
 
 
+
+
     <android.support.design.widget.FloatingActionButton
         android:layout_width="100dp"
         android:layout_height="wrap_content"
@@ -26,5 +28,28 @@
         android:layout_marginBottom="10dp"
         app:backgroundTint="@color/tabColorText"
         android:onClick="simple"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        android:id="@+id/button"
+        android:onClick="registerClick"
+        android:layout_alignTop="@+id/floatingActionButton"
+        android:layout_toStartOf="@+id/floatingActionButton" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner1"
+        android:layout_alignTop="@+id/button"
+        android:layout_toStartOf="@+id/button" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner2"
+        android:layout_alignBottom="@+id/spinner1"
+        android:layout_toStartOf="@+id/spinner1" />
 
 </RelativeLayout>
