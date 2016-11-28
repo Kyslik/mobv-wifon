@@ -10,29 +10,24 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 public class registerAPs extends AsyncTask<Void, Void, String> {
-    public static List<AccessPoint> apsToRegister;
-
     int locationId;
     List<AccessPoint> accessPoints;
+
+    ProgressDialog pDialog;
     WeakReference<Activity> weakActivity;
 
     public registerAPs(int locationIdSrc, List<AccessPoint> accessPointsSrc, Activity activity) {
@@ -42,49 +37,72 @@ public class registerAPs extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Void... params) {
-        return POST("http://mobv-server.visi.sk/api/v1/location/"
-                        + Integer.toString(locationId)
-                        + "/access-points"
-                , apsToRegister);
+    protected void onPreExecute() {
+        super.onPreExecute();
+
+        Activity activity = weakActivity.get();
+        if (activity != null) {
+            pDialog = new ProgressDialog(activity);
+            pDialog.setMessage("Sending ...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+    }
+
+    @Override
+    protected String doInBackground(Void ...params) {
+        try {
+            String link = new String("http://mobv-server.visi.sk/api/v1/location/"
+                    + Integer.toString(locationId)
+                    + "/access-points");
+
+            URL url = new URL(link); //Enter URL here
+            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.
+            httpURLConnection.setRequestProperty("Content-Type", "application/json"); // here you are setting the `Content-Type` for the data you are sending which is `application/json`
+            httpURLConnection.connect();
+
+            DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+            wr.writeBytes(createJson(666, accessPoints));
+            wr.flush();
+            wr.close();
+
+            Log.i("NET", httpURLConnection.getRequestMethod());
+            Log.i("NET", httpURLConnection.getURL().getPath());
+            return httpURLConnection.getResponseMessage();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(String result) {
+        // Dismiss the progress dialog
+        if (pDialog != null && pDialog.isShowing())
+            pDialog.dismiss();
+
         Log.d("NET", result);
 
         Toast.makeText(weakActivity.get(), result, Toast.LENGTH_LONG).show();
     }
 
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while ((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-    }
-
-    private static String POST(String url, List<AccessPoint> aps) {
-        InputStream inputStream = null;
-        String result = "";
+    static private String createJson(int deviceId, List<AccessPoint> aps)
+    {
         try {
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(url);
-
-            String json;
-
             JSONArray jsonArray = new JSONArray();
-            for (int i = 0; i < aps.size(); ++i) {
+            for (int i = 0; i < aps.size() ; ++i) {
                 AccessPoint ap = aps.get(i);
 
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.accumulate("ssid", ap.ssid);
-                jsonObject.accumulate("device_id", 1);
+                jsonObject.accumulate("device_id", deviceId);
                 jsonObject.accumulate("bssid", ap.bssid);
                 jsonObject.accumulate("level", ap.level);
                 jsonObject.accumulate("capabilities", ap.capabilities);
@@ -93,36 +111,12 @@ public class registerAPs extends AsyncTask<Void, Void, String> {
                 jsonArray.put(jsonObject);
             }
 
-            // 4. convert JSONObject to JSON to String
-            json = jsonArray.toString();
-
-            // 5. set json to StringEntity
-            StringEntity se = new StringEntity(json);
-
-            // 6. set httpPost Entity
-            httpPost.setEntity(se);
-
-            // 7. Set some headers to inform server about the type of the content
-            httpPost.setHeader("Accept", "application/json");
-            httpPost.setHeader("Content-type", "application/json");
-
-            // 8. Execute POST request to the given URL
-            HttpResponse httpResponse = httpclient.execute(httpPost);
-
-            // 9. receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
-
-            // 10. convert inputstream to string
-            if (inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "Did not work!";
-
-        } catch (Exception e) {
-//            Log.d("InputStream", e.getLocalizedMessage());
+            String json = jsonArray.toString();
+            Log.d("JSON", json);
+            return json;
         }
-
-        // 11. return result
-        return result;
+        catch (JSONException e){
+            return "";
+        }
     }
 }
