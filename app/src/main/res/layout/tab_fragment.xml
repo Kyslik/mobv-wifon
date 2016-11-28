@@ -3,31 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/fragmentColor">
+    android:background="@color/fragmentColor"
+    android:orientation="vertical">
 
 
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView"
-        android:paddingTop="1dp"/>
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:fillViewport="true"
+        android:paddingBottom="75dp">
+
+        <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView"
+            android:paddingTop="1dp"
+            android:paddingBottom="5dp"/>
+
+    </ScrollView>
 
 
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:fabSize="normal"
-        android:src="@drawable/scan"
-        android:id="@+id/floatingActionButton"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        app:backgroundTint="@color/tabColorText"
-        android:onClick="simple"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="#eeeeee"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
 
     <Button
         android:layout_width="wrap_content"
@@ -35,21 +38,58 @@
         android:text="@string/register"
         android:id="@+id/button"
         android:onClick="registerClick"
-        android:layout_alignTop="@+id/floatingActionButton"
-        android:layout_toStartOf="@+id/floatingActionButton" />
+        android:background="@color/listItemTextColor"
+        android:textColor="@color/tabColorText"/>
 
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner1"
-        android:layout_alignTop="@+id/button"
-        android:layout_toStartOf="@+id/button" />
 
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner2"
-        android:layout_alignBottom="@+id/spinner1"
-        android:layout_toStartOf="@+id/spinner1" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Poschodie:"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/tabColorBackground"/>
+
+            <Spinner
+                android:id="@+id/spinner1"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:spinnerMode="dropdown" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Blok:"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/tabColorBackground"/>
+
+
+        <Spinner
+                android:id="@+id/spinner2"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:spinnerMode="dropdown" />
+
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:fabSize="normal"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/scan"
+            android:id="@+id/floatingActionButton"
+            app:backgroundTint="@color/tabColorText"
+            android:onClick="simple"/>
+
+
+    </LinearLayout>
 
 </RelativeLayout>

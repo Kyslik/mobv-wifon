@@ -42,7 +42,7 @@ public class TabFragment extends Fragment{
         //ArrayAdapter<String> wifiAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item, R.id.ssid, dataSource);
 
         List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 4; ++i) {
             AccessPoint temp =  new AccessPoint();
             temp.ssid = "nejake SSID";
             temp.bssid = "nejake BSSID";
