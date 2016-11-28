@@ -1,6 +1,9 @@
 package com.stu.fei.mobv;
 
 
+import android.content.Context;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -38,12 +41,21 @@ public class TabFragment extends Fragment{
         //String[] dataSource = {"eduroam", "C606"};
         //ArrayAdapter<String> wifiAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item, R.id.ssid, dataSource);
 
+//        List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
+//        for (int i = 0; i < 3; ++i) {
+//            AccessPoint temp =  new AccessPoint();
+//            temp.ssid = "nejake SSID";
+//            temp.bssid = "nejake BSSID";
+//            accessPoints.add(temp);
+//        }
+
+        WifiManager mainWifi = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
+        mainWifi.startScan();
+        List<ScanResult> wifiList =mainWifi.getScanResults();
+
         List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
-        for (int i = 0; i < 3; ++i) {
-            AccessPoint temp =  new AccessPoint();
-            temp.ssid = "nejake SSID";
-            temp.bssid = "nejake BSSID";
-            accessPoints.add(temp);
+        for (int i = 0; i < wifiList.size(); ++i) {
+            accessPoints.add(AccessPoint.createNew(wifiList.get(i)));
         }
 
         ListAdapter wifiAdapter = new AddWifiArrayAdapter(getActivity(), accessPoints);
@@ -81,7 +93,7 @@ public class TabFragment extends Fragment{
         }
         String poschodie = ((Spinner) view.findViewById(R.id.spinner1)).getSelectedItem().toString();
         String blok = ((Spinner) view.findViewById(R.id.spinner2)).getSelectedItem().toString();
-        int locationId;
+        int locationId = 0;
         if(blok == "A") {
             switch (poschodie){
                 case "-1" : locationId =  1;
@@ -206,6 +218,8 @@ public class TabFragment extends Fragment{
                     break;
             }
         }
+        registerAPs registerAPsTask = new registerAPs(locationId, toRegisterAccessPoints, getActivity());
+        registerAPsTask.execute();
     }
 
 }
