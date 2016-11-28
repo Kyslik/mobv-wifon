@@ -2,11 +2,18 @@ package com.stu.fei.mobv;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -60,6 +67,15 @@ public class MainActivity extends AppCompatActivity{
 
     public void exampleImgButton(View view) {
         Toast.makeText(this,"location", Toast.LENGTH_SHORT).show();
+    }
+
+    public void registerClick(View view)
+    {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        Fragment fragment = ((FragmentPageAdapter)viewPager.getAdapter()).getActualFragment();
+        if(fragment instanceof TabFragment) {
+            ((TabFragment) fragment).registerAPs(view);
+        }
     }
 
 }

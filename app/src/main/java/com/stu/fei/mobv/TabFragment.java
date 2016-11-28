@@ -81,8 +81,7 @@ public class TabFragment extends Fragment{
         return view;
     }
 
-    public void registerClick(View view)
-    {
+    public void registerAPs(View view) {
         ListView listView = (ListView) view.findViewById(R.id.listView);
         List<AccessPoint> toRegisterAccessPoints = new ArrayList<AccessPoint>();
         for(int i = 0; i < listView.getCount(); i++) {
@@ -221,5 +220,4 @@ public class TabFragment extends Fragment{
         registerAPs registerAPsTask = new registerAPs(locationId, toRegisterAccessPoints, getActivity());
         registerAPsTask.execute();
     }
-
 }
