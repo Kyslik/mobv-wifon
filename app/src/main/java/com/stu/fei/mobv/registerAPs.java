@@ -7,6 +7,7 @@ package com.stu.fei.mobv;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -51,7 +52,9 @@ public class registerAPs extends AsyncTask<Void, Void, String> {
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(String result) {
-//        Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+        Log.d("NET", result);
+
+        Toast.makeText(weakActivity.get(), result, Toast.LENGTH_LONG).show();
     }
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
@@ -81,6 +84,7 @@ public class registerAPs extends AsyncTask<Void, Void, String> {
 
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.accumulate("ssid", ap.ssid);
+                jsonObject.accumulate("device_id", 1);
                 jsonObject.accumulate("bssid", ap.bssid);
                 jsonObject.accumulate("level", ap.level);
                 jsonObject.accumulate("capabilities", ap.capabilities);

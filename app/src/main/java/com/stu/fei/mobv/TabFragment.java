@@ -27,13 +27,13 @@ import java.util.List;
 
 public class TabFragment extends Fragment{
 
-
+    View view;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.tab_fragment, container, false);
+        view = inflater.inflate(R.layout.tab_fragment, container, false);
 
 
         // list_item //
@@ -41,22 +41,22 @@ public class TabFragment extends Fragment{
         //String[] dataSource = {"eduroam", "C606"};
         //ArrayAdapter<String> wifiAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item, R.id.ssid, dataSource);
 
-//        List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
-//        for (int i = 0; i < 3; ++i) {
-//            AccessPoint temp =  new AccessPoint();
-//            temp.ssid = "nejake SSID";
-//            temp.bssid = "nejake BSSID";
-//            accessPoints.add(temp);
-//        }
-
-        WifiManager mainWifi = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
-        mainWifi.startScan();
-        List<ScanResult> wifiList =mainWifi.getScanResults();
-
         List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
-        for (int i = 0; i < wifiList.size(); ++i) {
-            accessPoints.add(AccessPoint.createNew(wifiList.get(i)));
+        for (int i = 0; i < 3; ++i) {
+            AccessPoint temp =  new AccessPoint();
+            temp.ssid = "nejake SSID";
+            temp.bssid = "nejake BSSID";
+            accessPoints.add(temp);
         }
+
+//        WifiManager mainWifi = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
+//        mainWifi.startScan();
+//        List<ScanResult> wifiList =mainWifi.getScanResults();
+//
+//        List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
+//        for (int i = 0; i < wifiList.size(); ++i) {
+//            accessPoints.add(AccessPoint.createNew(wifiList.get(i)));
+//        }
 
         ListAdapter wifiAdapter = new AddWifiArrayAdapter(getActivity(), accessPoints);
         ListView listView = (ListView) view.findViewById(R.id.listView);
@@ -81,7 +81,7 @@ public class TabFragment extends Fragment{
         return view;
     }
 
-    public void registerAPs(View view) {
+    public void registerAPs() {
         ListView listView = (ListView) view.findViewById(R.id.listView);
         List<AccessPoint> toRegisterAccessPoints = new ArrayList<AccessPoint>();
         for(int i = 0; i < listView.getCount(); i++) {

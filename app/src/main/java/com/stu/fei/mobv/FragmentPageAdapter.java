@@ -15,7 +15,12 @@ import android.text.style.ImageSpan;
 
 public class FragmentPageAdapter extends FragmentPagerAdapter {
 
-    private Fragment fragment;
+    public  Fragment fragment;
+    private Fragment fragment2;
+    private Fragment fragment3;
+
+
+
     private int[] imageResId = {
             R.drawable.home,
             R.drawable.location,
@@ -28,7 +33,18 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
     public FragmentPageAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
+
+            fragment = new TabFragment();
+
+            fragment2 = new TabFragment2();
+
+            fragment3 = new TabFragment3();
+
+
+
     }
+
+
 
     @Override
     public Fragment getItem(int position) {
@@ -36,15 +52,14 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
         //Fragment fragment;
 
         if(position == 0){
-            fragment = new TabFragment();
+            return fragment ;
         }
         else if(position == 1){
-            fragment = new TabFragment2();
+            return fragment2 ;
         }else{
-            fragment = new TabFragment3();
+            return fragment3;
         }
 
-        return fragment;
     }
 
     public Fragment getActualFragment() {

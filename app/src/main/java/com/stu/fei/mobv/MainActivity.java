@@ -72,9 +72,9 @@ public class MainActivity extends AppCompatActivity{
     public void registerClick(View view)
     {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        Fragment fragment = ((FragmentPageAdapter)viewPager.getAdapter()).getActualFragment();
+        Fragment fragment = ((FragmentPageAdapter)viewPager.getAdapter()).fragment;
         if(fragment instanceof TabFragment) {
-            ((TabFragment) fragment).registerAPs(view);
+            ((TabFragment) fragment).registerAPs();
         }
     }
 
