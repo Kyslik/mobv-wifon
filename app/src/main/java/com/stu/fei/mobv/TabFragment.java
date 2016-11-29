@@ -11,8 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -28,7 +27,10 @@ import java.util.List;
 public class TabFragment extends Fragment{
 
     View view;
-    RepositoryCheckedAP repositoryCheckedAP = RepositoryCheckedAP.getInstance();
+    RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
+    RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
+
+    ListAdapter wifiAdapter;
 
     @Nullable
     @Override
@@ -50,16 +52,18 @@ public class TabFragment extends Fragment{
 //            accessPoints.add(temp);
 //        }
 
-        WifiManager mainWifi = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
-        mainWifi.startScan();
-        List<ScanResult> wifiList =mainWifi.getScanResults();
+//        WifiManager mainWifi = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
+//        mainWifi.startScan();
+//        List<ScanResult> wifiList =mainWifi.getScanResults();
+//
+//        List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
+//        for (int i = 0; i < wifiList.size(); ++i) {
+//            accessPoints.add(AccessPoint.createNew(wifiList.get(i)));
+//        }
 
-        List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
-        for (int i = 0; i < wifiList.size(); ++i) {
-            accessPoints.add(AccessPoint.createNew(wifiList.get(i)));
-        }
+        repositoryAPs.refresh(getContext());
 
-        ListAdapter wifiAdapter = new AddWifiArrayAdapter(getActivity(), accessPoints);
+        wifiAdapter = new AddWifiArrayAdapter(getActivity(), repositoryAPs.getList());
         ListView listView = (ListView) view.findViewById(R.id.listView);
         listView.setAdapter(wifiAdapter);
 
@@ -82,9 +86,13 @@ public class TabFragment extends Fragment{
         return view;
     }
 
+    public void refresh(){
+        ((BaseAdapter)wifiAdapter).notifyDataSetChanged();
+    }
+
     public void registerAPs() {
         ListView listView = (ListView) view.findViewById(R.id.listView);
-        List<AccessPoint> toRegisterAccessPoints = repositoryCheckedAP.getListCheckedAPs();
+        List<AccessPoint> toRegisterAccessPoints = repositoryCheckedAPs.getList();
 //        for(int i = 0; i < listView.getCount(); i++) {
 //            CheckBox checkBox = (CheckBox) listView.getChildAt(i).findViewById(R.id.checkBox);
 //            if(checkBox.isChecked()) {

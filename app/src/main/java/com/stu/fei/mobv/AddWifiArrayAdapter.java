@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class AddWifiArrayAdapter extends ArrayAdapter<AccessPoint> {
 
-    RepositoryCheckedAP repositoryCheckedAP = RepositoryCheckedAP.getInstance();
+    RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
 
     AddWifiArrayAdapter(Context context, List<AccessPoint> wifi) {
         super(context, R.layout.list_item, wifi );
@@ -36,7 +36,7 @@ public class AddWifiArrayAdapter extends ArrayAdapter<AccessPoint> {
 
         CheckBox checkBox = (CheckBox) customView.findViewById(R.id.checkBox);
         if(checkBox != null){
-            if(repositoryCheckedAP.isAPChecked(wifiInfo)){
+            if(repositoryCheckedAPs.exist(wifiInfo)){
                 checkBox.setChecked(true);
             }
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -45,9 +45,9 @@ public class AddWifiArrayAdapter extends ArrayAdapter<AccessPoint> {
                 public void onCheckedChanged(CompoundButton buttonView,
                                              boolean isChecked) {
                     if (isChecked) {
-                        repositoryCheckedAP.addCheckedAP(wifiInfo);
+                        repositoryCheckedAPs.add(wifiInfo);
                     } else {
-                        repositoryCheckedAP.removeCheckedAP(wifiInfo);
+                        repositoryCheckedAPs.remove(wifiInfo);
                     }
                 }
             });

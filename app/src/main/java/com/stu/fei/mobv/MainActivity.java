@@ -17,8 +17,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 
+    RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
+
     String[] testArr = {"text1", "text2", "text3"};
 
+    final private String TAB_FRAGMENT_TAG = "home";
     TabLayout tabLayout;
     Toolbar toolbar;
 
@@ -47,9 +50,14 @@ public class MainActivity extends AppCompatActivity{
 
 
     public void simple(View view) {
-        Toast.makeText(this,"search", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"Searching ..", Toast.LENGTH_SHORT).show();
 
+        repositoryAPs.refresh(getApplicationContext());
 
+        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentByTag(TAB_FRAGMENT_TAG);
+        if(tabFragment != null){
+            tabFragment.refresh();
+        }
 
 //        WifiManager mainWifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 //        mainWifi.startScan();
