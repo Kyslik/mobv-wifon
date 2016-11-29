@@ -52,7 +52,7 @@ public class registerAPs extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void ...params) {
         try {
-            String link = new String("http://mobv-server.visi.sk/api/v1/location/"
+            String link = new String("http://mobv-server.visi.sk/api/v1/locations/"
                     + Integer.toString(locationId)
                     + "/access-points");
 
