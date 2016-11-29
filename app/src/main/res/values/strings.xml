@@ -3,4 +3,6 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="register">Register</string>
+
+    <string name="icon_upload_btn">&#xf0ee;</string>
 </resources>

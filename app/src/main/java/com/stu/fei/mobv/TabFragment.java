@@ -2,6 +2,7 @@ package com.stu.fei.mobv;
 
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -11,8 +12,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -51,6 +55,14 @@ public class TabFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
+
+//        if(repositoryCheckedAPs.exist(wifiInfo)){
+//            checkBox.setChecked(true);
+//            repositoryCheckedAPs.add(wifiInfo);
+//        } else {
+//            checkBox.setChecked(false);
+//            repositoryCheckedAPs.remove(wifiInfo);
+//        }
 
         //        swipeRefreshLayout.post(new Runnable() {
 //                                    @Override
@@ -91,7 +103,20 @@ public class TabFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         ListView listView = (ListView) view.findViewById(R.id.listView);
         listView.setAdapter(wifiAdapter);
 
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AccessPoint ap = (AccessPoint) adapterView.getItemAtPosition(i);
+                CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+                if(repositoryCheckedAPs.exist(ap)){
+                    checkBox.setChecked(true);
+                    repositoryCheckedAPs.add(ap);
+                } else {
+                    checkBox.setChecked(false);
+                    repositoryCheckedAPs.remove(ap);
+                }
+            }
+        });
 
         // list_item //
 
@@ -106,6 +131,9 @@ public class TabFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items2);
         dropdown2.setAdapter(adapter2);
 
+        Typeface font = Typeface.createFromAsset( getActivity().getAssets(), "fontawesome-webfont.ttf" );
+        Button button = (Button)view.findViewById( R.id.button );
+        button.setTypeface(font);
 
         return view;
     }

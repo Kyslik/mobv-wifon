@@ -34,7 +34,7 @@ public class AddWifiArrayAdapter extends ArrayAdapter<AccessPoint> {
         TextView bssidTextView = (TextView) customView.findViewById(R.id.bssid);
         bssidTextView.setText(wifiInfo.bssid);
 
-        CheckBox checkBox = (CheckBox) customView.findViewById(R.id.checkBox);
+        final CheckBox checkBox = (CheckBox) customView.findViewById(R.id.checkBox);
         if(checkBox != null){
             if(repositoryCheckedAPs.exist(wifiInfo)){
                 checkBox.setChecked(true);
