@@ -31,5 +31,4 @@ public class AddWifiArrayAdapter extends ArrayAdapter<AccessPoint> {
         bssidTextView.setText(wifiInfo.bssid);
         return customView;
     }
-
 }

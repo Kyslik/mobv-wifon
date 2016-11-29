@@ -70,6 +70,7 @@ public class registerAPs extends AsyncTask<Void, Void, String> {
 
             Log.i("NET", httpURLConnection.getRequestMethod());
             Log.i("NET", httpURLConnection.getURL().getPath());
+            Log.i("NET", Integer.toString(httpURLConnection.getResponseCode()));
             return httpURLConnection.getResponseMessage();
 
         } catch (MalformedURLException e) {

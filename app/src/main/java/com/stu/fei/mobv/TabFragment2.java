@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by vlado on 23.11.16.
  */
@@ -23,11 +26,20 @@ public class TabFragment2 extends Fragment {
 
         // list_item //
 
-        String[] dataSource = {"Blok C - prízemie","Blok A - prízemie"};
-        ArrayAdapter<String> wifiAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_info, R.id.location, dataSource);
+        new getLocations(getActivity()).execute();
 
-        ListView listView = (ListView) view.findViewById(R.id.listView);
-        listView.setAdapter(wifiAdapter);
+//        List<Location> locations = new ArrayList<Location>();
+//        AddLocationArrayAdapter locationAdapter = new AddLocationArrayAdapter(getActivity(), locations);
+//        for (int i = 0; i < 4; ++i) {
+//            Location location = new Location();
+//            location.id = i;
+//            location.block = Integer.toString(i);
+//            location.level = Integer.toString(i);
+//            locationAdapter.add(location);
+//        }
+
+//        ListView listView = (ListView) view.findViewById(R.id.listView);
+//        listView.setAdapter(locationAdapter);
 
         // list_item //
 
