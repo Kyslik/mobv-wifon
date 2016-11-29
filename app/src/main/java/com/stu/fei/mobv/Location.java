@@ -9,6 +9,9 @@ public class Location {
     public String block;
     public String level;
 
+    /// Pouziva sa pri navrhoch lokality
+    public int matchCount;
+
     public String getName() {
         String name = new String("Blok");
         name += " " + block;
