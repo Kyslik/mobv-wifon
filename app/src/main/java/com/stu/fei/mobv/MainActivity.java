@@ -48,31 +48,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-
-    public void simple(View view) {
-        Toast.makeText(this,"Searching ..", Toast.LENGTH_SHORT).show();
-
-        repositoryAPs.refresh(getApplicationContext());
-
-        TabFragment tabFragment = (TabFragment) getSupportFragmentManager().findFragmentByTag(TAB_FRAGMENT_TAG);
-        if(tabFragment != null){
-            tabFragment.refresh();
-        }
-
-//        WifiManager mainWifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-//        mainWifi.startScan();
-//        List<ScanResult> wifiList =mainWifi.getScanResults();
-//
-//        List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
-//        for (int i = 0; i < wifiList.size(); ++i) {
-//            accessPoints.add(AccessPoint.createNew(wifiList.get(i)));
-//        }
-//
-//        ListAdapter wifiAdapter = new AddWifiArrayAdapter(this, accessPoints);
-//        ListView listView = (ListView) findViewById(R.id.listView);
-//        listView.setAdapter(wifiAdapter);
-    }
-
     public void exampleImgButton(View view) {
         Toast.makeText(this,"location", Toast.LENGTH_SHORT).show();
     }

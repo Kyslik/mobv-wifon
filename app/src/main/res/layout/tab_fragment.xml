@@ -7,8 +7,14 @@
     android:orientation="vertical">
 
 
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <!--<ScrollView-->
+        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        <!--android:fillViewport="true"-->
+        <!--android:paddingBottom="75dp">-->
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_refresh_layout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:fillViewport="true"
@@ -21,7 +27,8 @@
             android:paddingTop="1dp"
             android:paddingBottom="5dp"/>
 
-    </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <!--</ScrollView>-->
 
 
     <LinearLayout
@@ -31,16 +38,6 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_alignParentBottom="true">
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/register"
-        android:id="@+id/button"
-        android:onClick="registerClick"
-        android:background="@color/listItemTextColor"
-        android:textColor="@color/tabColorText"/>
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -76,19 +73,14 @@
                 android:gravity="center"
                 android:spinnerMode="dropdown" />
 
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="100dp"
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            app:fabSize="normal"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/scan"
-            android:id="@+id/floatingActionButton"
-            app:backgroundTint="@color/tabColorText"
-            android:onClick="simple"/>
-
+            android:text="@string/register"
+            android:id="@+id/button"
+            android:onClick="registerClick"
+            android:background="@color/listItemTextColor"
+            android:textColor="@color/tabColorText"/>
 
     </LinearLayout>
 

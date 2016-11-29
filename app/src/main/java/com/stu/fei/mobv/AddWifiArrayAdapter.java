@@ -53,7 +53,6 @@ public class AddWifiArrayAdapter extends ArrayAdapter<AccessPoint> {
             });
         }
 
-
         return customView;
     }
 }

@@ -7,6 +7,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,19 +25,42 @@ import java.util.List;
  * Created by vlado on 23.11.16.
  */
 
-public class TabFragment extends Fragment{
+public class TabFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     View view;
     RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
 
     ListAdapter wifiAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    @Override
+    public void onRefresh() {
+        repositoryAPs.refresh(getContext());
+
+        ((BaseAdapter)wifiAdapter).notifyDataSetChanged();
+
+        swipeRefreshLayout.setRefreshing(false);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.tab_fragment, container, false);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        //        swipeRefreshLayout.post(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        swipeRefreshLayout.setRefreshing(true);
+//
+//                                        fetchMovies();
+//                                    }
+//                                }
+//        );
 
 
         // list_item //
