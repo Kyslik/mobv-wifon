@@ -28,6 +28,7 @@ import java.util.List;
 public class TabFragment extends Fragment{
 
     View view;
+    RepositoryCheckedAP repositoryCheckedAP = RepositoryCheckedAP.getInstance();
 
     @Nullable
     @Override
@@ -83,13 +84,13 @@ public class TabFragment extends Fragment{
 
     public void registerAPs() {
         ListView listView = (ListView) view.findViewById(R.id.listView);
-        List<AccessPoint> toRegisterAccessPoints = new ArrayList<AccessPoint>();
-        for(int i = 0; i < listView.getCount(); i++) {
-            CheckBox checkBox = (CheckBox) listView.getChildAt(i).findViewById(R.id.checkBox);
-            if(checkBox.isChecked()) {
-                toRegisterAccessPoints.add((AccessPoint) listView.getAdapter().getItem(i));
-            }
-        }
+        List<AccessPoint> toRegisterAccessPoints = repositoryCheckedAP.getListCheckedAPs();
+//        for(int i = 0; i < listView.getCount(); i++) {
+//            CheckBox checkBox = (CheckBox) listView.getChildAt(i).findViewById(R.id.checkBox);
+//            if(checkBox.isChecked()) {
+//                toRegisterAccessPoints.add((AccessPoint) listView.getAdapter().getItem(i));
+//            }
+//        }
         String poschodie = ((Spinner) view.findViewById(R.id.spinner1)).getSelectedItem().toString();
         String blok = ((Spinner) view.findViewById(R.id.spinner2)).getSelectedItem().toString();
         int locationId = 0;
@@ -219,5 +220,8 @@ public class TabFragment extends Fragment{
         }
         registerAPs registerAPsTask = new registerAPs(locationId, toRegisterAccessPoints, getActivity());
         registerAPsTask.execute();
+
+        Toast t = Toast.makeText(getActivity(), "APs saved to server", Toast.LENGTH_LONG);
+        t.show();
     }
 }
