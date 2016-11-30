@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ import java.util.List;
  * Created by vlado on 23.11.16.
  */
 
-public class TabFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class TabFragment extends Fragment{
 
     View view;
     RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
@@ -38,13 +39,25 @@ public class TabFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     ListAdapter wifiAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    @Override
     public void onRefresh() {
-        repositoryAPs.refresh(getContext());
+        if(swipeRefreshLayout != null){
 
-        ((BaseAdapter)wifiAdapter).notifyDataSetChanged();
+            Toast t = Toast.makeText(getActivity(), "Searching ..", Toast.LENGTH_SHORT);
+            t.show();
 
-        swipeRefreshLayout.setRefreshing(false);
+            swipeRefreshLayout.setEnabled(true);
+            swipeRefreshLayout.setProgressViewOffset(false, 0,
+                    (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+
+            swipeRefreshLayout.setRefreshing(true);
+
+            repositoryAPs.refresh(getContext());
+
+            ((BaseAdapter)wifiAdapter).notifyDataSetChanged();
+
+            swipeRefreshLayout.setRefreshing(false);
+            swipeRefreshLayout.setEnabled(false);
+        }
     }
 
     @Nullable
@@ -54,25 +67,8 @@ public class TabFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         view = inflater.inflate(R.layout.tab_fragment, container, false);
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setEnabled(false);
 
-//        if(repositoryCheckedAPs.exist(wifiInfo)){
-//            checkBox.setChecked(true);
-//            repositoryCheckedAPs.add(wifiInfo);
-//        } else {
-//            checkBox.setChecked(false);
-//            repositoryCheckedAPs.remove(wifiInfo);
-//        }
-
-        //        swipeRefreshLayout.post(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        swipeRefreshLayout.setRefreshing(true);
-//
-//                                        fetchMovies();
-//                                    }
-//                                }
-//        );
 
 
         // list_item //

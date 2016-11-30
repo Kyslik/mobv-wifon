@@ -5,4 +5,6 @@
     <string name="register">Register</string>
 
     <string name="icon_upload_btn">&#xf0ee;</string>
+    <string name="icon_refresh">&#xf021;</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>
