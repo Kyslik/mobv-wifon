@@ -2,6 +2,9 @@ package com.stu.fei.mobv;
 
 import android.net.wifi.ScanResult;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by miroslav.adamec on 14.11.2016.
  */
@@ -25,5 +28,17 @@ public class AccessPoint {
         accessPoint.timestamp = Long.toString(scannedAP.timestamp);
 
         return accessPoint;
+    }
+
+    public String toString() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.accumulate("ssid", ssid);
+            jsonObject.accumulate("bssid", bssid);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return super.toString();
     }
 }

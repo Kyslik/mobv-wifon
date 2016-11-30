@@ -4,24 +4,44 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/fragmentColor"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
 
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <!--<ScrollView-->
+        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:fillViewport="true"-->
+        <!--android:paddingBottom="75dp">-->
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_refresh_layout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:fillViewport="true"
         android:paddingBottom="75dp">
 
-        <ListView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/listView"
-            android:paddingTop="1dp"
-            android:paddingBottom="5dp"/>
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:orientation="horizontal">
+            <ListView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/listView"
+                android:paddingTop="1dp"
+                android:paddingBottom="5dp"/>
 
-    </ScrollView>
+            <TextView android:id="@android:id/empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="No data"/>
+        </LinearLayout>
+
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <!--</ScrollView>-->
 
 
     <LinearLayout
@@ -30,23 +50,13 @@
         android:background="#eeeeee"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_alignParentBottom="true">
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/register"
-        android:id="@+id/button"
-        android:onClick="registerClick"
-        android:background="@color/listItemTextColor"
-        android:textColor="@color/tabColorText"/>
-
+        android:layout_alignParentBottom="true"
+        >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Poschodie:"
-            android:layout_marginLeft="20dp"
             android:textColor="@color/tabColorBackground"/>
 
             <Spinner
@@ -76,19 +86,16 @@
                 android:gravity="center"
                 android:spinnerMode="dropdown" />
 
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="100dp"
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            app:fabSize="normal"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/scan"
-            android:id="@+id/floatingActionButton"
-            app:backgroundTint="@color/tabColorText"
-            android:onClick="simple"/>
-
+            android:layout_marginLeft="20dp"
+            android:text="@string/icon_upload_btn"
+            android:id="@+id/button"
+            android:onClick="registerClick"
+            android:background="@color/listItemTextColor"
+            android:textColor="@color/tabColorText"
+            android:textSize="24sp" />
 
     </LinearLayout>
 

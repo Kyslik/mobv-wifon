@@ -2,15 +2,20 @@ package com.stu.fei.mobv;
 
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListAdapter;
@@ -28,13 +33,42 @@ import java.util.List;
 public class TabFragment extends Fragment{
 
     View view;
-    RepositoryCheckedAP repositoryCheckedAP = RepositoryCheckedAP.getInstance();
+    RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
+    RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
+
+    ListAdapter wifiAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    public void onRefresh() {
+        if(swipeRefreshLayout != null){
+
+            Toast t = Toast.makeText(getActivity(), "Searching ..", Toast.LENGTH_SHORT);
+            t.show();
+
+            swipeRefreshLayout.setEnabled(true);
+            swipeRefreshLayout.setProgressViewOffset(false, 0,
+                    (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+
+            swipeRefreshLayout.setRefreshing(true);
+
+            repositoryAPs.refresh(getContext());
+
+            ((BaseAdapter)wifiAdapter).notifyDataSetChanged();
+
+            swipeRefreshLayout.setRefreshing(false);
+            swipeRefreshLayout.setEnabled(false);
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.tab_fragment, container, false);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setEnabled(false);
+
 
 
         // list_item //
@@ -50,20 +84,35 @@ public class TabFragment extends Fragment{
 //            accessPoints.add(temp);
 //        }
 
-        WifiManager mainWifi = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
-        mainWifi.startScan();
-        List<ScanResult> wifiList =mainWifi.getScanResults();
+//        WifiManager mainWifi = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
+//        mainWifi.startScan();
+//        List<ScanResult> wifiList =mainWifi.getScanResults();
+//
+//        List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
+//        for (int i = 0; i < wifiList.size(); ++i) {
+//            accessPoints.add(AccessPoint.createNew(wifiList.get(i)));
+//        }
 
-        List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
-        for (int i = 0; i < wifiList.size(); ++i) {
-            accessPoints.add(AccessPoint.createNew(wifiList.get(i)));
-        }
+        repositoryAPs.refresh(getContext());
 
-        ListAdapter wifiAdapter = new AddWifiArrayAdapter(getActivity(), accessPoints);
+        wifiAdapter = new AddWifiArrayAdapter(getActivity(), repositoryAPs.getList());
         ListView listView = (ListView) view.findViewById(R.id.listView);
         listView.setAdapter(wifiAdapter);
 
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AccessPoint ap = (AccessPoint) adapterView.getItemAtPosition(i);
+                CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+                if(repositoryCheckedAPs.exist(ap)){
+                    checkBox.setChecked(true);
+                    repositoryCheckedAPs.add(ap);
+                } else {
+                    checkBox.setChecked(false);
+                    repositoryCheckedAPs.remove(ap);
+                }
+            }
+        });
 
         // list_item //
 
@@ -78,13 +127,20 @@ public class TabFragment extends Fragment{
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items2);
         dropdown2.setAdapter(adapter2);
 
+        Typeface font = Typeface.createFromAsset( getActivity().getAssets(), "fontawesome-webfont.ttf" );
+        Button button = (Button)view.findViewById( R.id.button );
+        button.setTypeface(font);
 
         return view;
     }
 
+    public void refresh(){
+        ((BaseAdapter)wifiAdapter).notifyDataSetChanged();
+    }
+
     public void registerAPs() {
         ListView listView = (ListView) view.findViewById(R.id.listView);
-        List<AccessPoint> toRegisterAccessPoints = repositoryCheckedAP.getListCheckedAPs();
+        List<AccessPoint> toRegisterAccessPoints = repositoryCheckedAPs.getList();
 //        for(int i = 0; i < listView.getCount(); i++) {
 //            CheckBox checkBox = (CheckBox) listView.getChildAt(i).findViewById(R.id.checkBox);
 //            if(checkBox.isChecked()) {
