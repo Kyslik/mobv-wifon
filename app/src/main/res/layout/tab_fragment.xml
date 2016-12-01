@@ -56,22 +56,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Poschodie:"
-            android:textColor="@color/tabColorBackground"/>
-
-            <Spinner
-                android:id="@+id/spinner1"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:spinnerMode="dropdown" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Blok:"
             android:layout_marginLeft="20dp"
             android:textColor="@color/tabColorBackground"/>
@@ -84,7 +68,27 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:spinnerMode="dropdown" />
+                android:spinnerMode="dropdown"
+                android:textAlignment="center"
+                android:dropDownWidth="110dp"
+            android:layout_marginRight="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Poschodie:"
+            android:textColor="@color/tabColorBackground"/>
+
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:spinnerMode="dropdown"
+            android:dropDownWidth="110dp"/>
 
         <Button
             android:layout_width="wrap_content"
