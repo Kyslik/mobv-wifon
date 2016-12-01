@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,11 +32,12 @@ import java.util.List;
  * Created by vlado on 23.11.16.
  */
 
-public class TabFragment extends Fragment{
+public class TabFragment extends Fragment implements Repository.OnChangeListener {
 
     View view;
     RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
+    WebService ws = WebService.getInstance(getContext());
 
     ListAdapter wifiAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -69,8 +71,6 @@ public class TabFragment extends Fragment{
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setEnabled(false);
-
-
 
         // list_item //
 
@@ -114,6 +114,8 @@ public class TabFragment extends Fragment{
                 }
             }
         });
+
+        repositoryAPs.registerOnChangeListener(this);
 
         // list_item //
 
@@ -313,5 +315,25 @@ public class TabFragment extends Fragment{
 
         Toast t = Toast.makeText(getActivity(), "APs saved to server", Toast.LENGTH_LONG);
         t.show();
+    }
+
+    @Override
+    public void onChange(List<AccessPoint> list) {
+
+        Log.v("WS", "trigger on Change");
+
+        ws.getSuggestion(list, new WebService.OnSuggestionsReceived() {
+            @Override
+            public void onSuccess(List<Location> list) {
+                Toast t  = Toast.makeText(getActivity(), "Success", Toast.LENGTH_LONG);
+                t.show();
+            }
+
+            @Override
+            public void onFailure(String responseString) {
+                Toast t  = Toast.makeText(getActivity(), "Nieco je zle :(", Toast.LENGTH_LONG);
+                t.show();
+            }
+        });
     }
 }

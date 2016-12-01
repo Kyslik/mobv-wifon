@@ -19,6 +19,21 @@ public class Repository {
 
     private List<AccessPoint> list = null;
 
+    interface OnChangeListener{
+        public void onChange(List<AccessPoint> list);
+    }
+
+    List<OnChangeListener> handlers = new LinkedList<>();
+
+    public void registerOnChangeListener(OnChangeListener listener){
+        handlers.add(listener);
+    }
+    public void triggerOnChange(){
+        for(OnChangeListener handler: handlers){
+            handler.onChange(list);
+        }
+    }
+
     protected Repository(){
         list = new LinkedList<>();
     }
@@ -52,19 +67,29 @@ public class Repository {
 
     public boolean add(AccessPoint accessPoint){
         Log.v(TAG, "ADD | AP = " + accessPoint);
-        return list.add(accessPoint);
+        boolean result = list.add(accessPoint);
+
+        triggerOnChange();
+        return result;
     }
 
     public void removeAll(){
         list = new LinkedList<>();
+
+        triggerOnChange();
     }
 
     public boolean remove(AccessPoint accessPoint){
-        return list.remove(accessPoint);
+
+        boolean result = list.remove(accessPoint);
+        triggerOnChange();
+        return result;
     }
 
     public AccessPoint remove(int index){
-        return list.remove(index);
+        AccessPoint result = list.remove(index);
+        triggerOnChange();
+        return result;
     }
 
     public List getList(){
