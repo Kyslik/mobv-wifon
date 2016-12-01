@@ -22,6 +22,7 @@ import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
@@ -37,7 +38,8 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
     View view;
     RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
-    WebService ws = WebService.getInstance(getContext());
+
+    TextView locationText;
 
     ListAdapter wifiAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -166,6 +168,8 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
         Typeface font = Typeface.createFromAsset( getActivity().getAssets(), "fontawesome-webfont.ttf" );
         Button button = (Button)view.findViewById( R.id.button );
         button.setTypeface(font);
+
+        locationText = (TextView) view.findViewById(R.id.locationText);
 
         return view;
     }
@@ -321,19 +325,27 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
     public void onChange(List<AccessPoint> list) {
 
         Log.v("WS", "trigger on Change");
+        WebService ws = WebService.getInstance(getContext());
+        if(list != null){
+            ws.getSuggestion(list, new WebService.OnSuggestionsReceived() {
+                @Override
+                public void onSuccess(List<Location> list) {
+                    if(list != null && list.size() > 0){
+                        Location location = list.get(0);
+                        locationText.setText("Nachádzate sa na: " + location.getName());
+                    }
+                    else {
+                        locationText.setText("Vaša poloha nebola zistená");
+                    }
+                }
 
-        ws.getSuggestion(list, new WebService.OnSuggestionsReceived() {
-            @Override
-            public void onSuccess(List<Location> list) {
-                Toast t  = Toast.makeText(getActivity(), "Success", Toast.LENGTH_LONG);
-                t.show();
-            }
+                @Override
+                public void onFailure(String responseString) {
+                    Toast t  = Toast.makeText(getActivity(), "Nieco je zle :(", Toast.LENGTH_LONG);
+                    t.show();
+                }
+            });
+        }
 
-            @Override
-            public void onFailure(String responseString) {
-                Toast t  = Toast.makeText(getActivity(), "Nieco je zle :(", Toast.LENGTH_LONG);
-                t.show();
-            }
-        });
     }
 }
