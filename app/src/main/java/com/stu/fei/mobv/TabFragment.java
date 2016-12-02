@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -39,7 +40,11 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
     TextView locationText;
     Location actualLocation = null;
 
+    List<AccessPoint> accessPointsAround = new LinkedList<>();
+
+
     ListAdapter wifiAdapter;
+    ListView listView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     public void onRefresh() {
@@ -95,10 +100,11 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
 //            accessPoints.add(AccessPoint.createNew(wifiList.get(i)));
 //        }
 
-        repositoryAPs.refresh(getContext());
+//        repositoryAPs.refresh(getContext());
 
-        wifiAdapter = new AddWifiArrayAdapter(getActivity(), repositoryAPs.getList());
-        ListView listView = (ListView) view.findViewById(R.id.listView);
+
+        wifiAdapter = new AddWifiArrayAdapter(getActivity(), accessPointsAround);
+        listView = (ListView) view.findViewById(R.id.listView);
         listView.setAdapter(wifiAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -177,7 +183,7 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
             }
         });
 
-        setupActualLocation(repositoryAPs.getSuggestions());
+//        setupActualLocation(repositoryAPs.getSuggestions());
         repositoryAPs.registerOnChangeListener(this);
 
         return view;
@@ -191,151 +197,180 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
     public void clear(){
         repositoryCheckedAPs.removeAll();
         repositoryAPs.removeAll();
-        repositoryAPs.refresh(getContext());
     }
 
 
     public void registerAPs() {
         ListView listView = (ListView) view.findViewById(R.id.listView);
-        List<AccessPoint> toRegisterAccessPoints = repositoryCheckedAPs.getList();
+        final List<AccessPoint> toRegisterAccessPoints = repositoryCheckedAPs.getList();
 //        for(int i = 0; i < listView.getCount(); i++) {
 //            CheckBox checkBox = (CheckBox) listView.getChildAt(i).findViewById(R.id.checkBox);
 //            if(checkBox.isChecked()) {
 //                toRegisterAccessPoints.add((AccessPoint) listView.getAdapter().getItem(i));
 //            }
 //        }
-        String poschodie = ((Spinner) view.findViewById(R.id.spinner1)).getSelectedItem().toString();
-        String blok = ((Spinner) view.findViewById(R.id.spinner2)).getSelectedItem().toString();
+        final String poschodie = ((Spinner) view.findViewById(R.id.spinner1)).getSelectedItem().toString();
+        final String blok = ((Spinner) view.findViewById(R.id.spinner2)).getSelectedItem().toString();
         int locationId = 0;
-        if(blok == "A") {
-            switch (poschodie){
-                case "-1" : locationId =  1;
-                    break;
-                case "0" : locationId =  2;
-                    break;
-                case "1" : locationId =  3;
-                    break;
-                case "2" : locationId =  4;
-                    break;
-                case "3" : locationId =  5;
-                    break;
-                case "4" : locationId =  6;
-                    break;
-                case "5" : locationId =  7;
-                    break;
-                case "6" : locationId =  8;
-                    break;
-                case "7" : locationId =  9;
-                    break;
-                case "8" : locationId =  10;
-                    break;
-            }
-        }
-        if(blok == "B") {
-            switch (poschodie){
-                case "-1" : locationId =  21;
-                    break;
-                case "0" : locationId =  22;
-                    break;
-                case "1" : locationId =  23;
-                    break;
-                case "2" : locationId =  24;
-                    break;
-                case "3" : locationId =  25;
-                    break;
-                case "4" : locationId =  26;
-                    break;
-                case "5" : locationId =  27;
-                    break;
-                case "6" : locationId =  28;
-                    break;
-                case "7" : locationId =  29;
-                    break;
-            }
-        }
-        if(blok == "C") {
-            switch (poschodie){
-                case "-1" : locationId =  11;
-                    break;
-                case "0" : locationId =  12;
-                    break;
-                case "1" : locationId =  13;
-                    break;
-                case "2" : locationId =  14;
-                    break;
-                case "3" : locationId =  15;
-                    break;
-                case "4" : locationId =  16;
-                    break;
-                case "5" : locationId =  17;
-                    break;
-                case "6" : locationId =  18;
-                    break;
-                case "7" : locationId =  19;
-                    break;
-                case "8" : locationId =  20;
-                    break;
-            }
-        }
-        if(blok == "D") {
-            switch (poschodie){
-                case "-1" : locationId =  30;
-                    break;
-                case "0" : locationId = 31;
-                    break;
-                case "1" : locationId =  32;
-                    break;
-                case "2" : locationId =  33;
-                    break;
-                case "3" : locationId =  34;
-                    break;
-                case "4" : locationId =  35;
-                    break;
-                case "5" : locationId =  36;
-                    break;
-                case "6" : locationId =  37;
-                    break;
-                case "7" : locationId =  38;
-                    break;
-            }
-        }
-        if(blok == "E") {
-            switch (poschodie){
-                case "-1" : locationId =  39;
-                    break;
-                case "0" : locationId =  40;
-                    break;
-                case "1" : locationId =  41;
-                    break;
-                case "2" : locationId =  42;
-                    break;
-                case "3" : locationId =  43;
-                    break;
-                case "4" : locationId =  44;
-                    break;
-                case "5" : locationId =  45;
-                    break;
-                case "6" : locationId =  46;
-                    break;
-                case "7" : locationId =  47;
-                    break;
-            }
-        }
-        if(blok == "T") {
-            switch (poschodie){
-                case "-1" : locationId =  48;
-                    break;
-                case "0" : locationId =  49;
-                    break;
-                case "1" : locationId = 50;
-                    break;
-            }
-        }
-        registerAPs registerAPsTask = new registerAPs(locationId, toRegisterAccessPoints, getActivity());
-        registerAPsTask.execute();
 
-        Toast t = Toast.makeText(getActivity(), "APs saved to server", Toast.LENGTH_LONG);
-        t.show();
+
+
+
+//        if(blok == "A") {
+//            switch (poschodie){
+//                case "-1" : locationId =  1;
+//                    break;
+//                case "0" : locationId =  2;
+//                    break;
+//                case "1" : locationId =  3;
+//                    break;
+//                case "2" : locationId =  4;
+//                    break;
+//                case "3" : locationId =  5;
+//                    break;
+//                case "4" : locationId =  6;
+//                    break;
+//                case "5" : locationId =  7;
+//                    break;
+//                case "6" : locationId =  8;
+//                    break;
+//                case "7" : locationId =  9;
+//                    break;
+//                case "8" : locationId =  10;
+//                    break;
+//            }
+//        }
+//        if(blok == "B") {
+//            switch (poschodie){
+//                case "-1" : locationId =  21;
+//                    break;
+//                case "0" : locationId =  22;
+//                    break;
+//                case "1" : locationId =  23;
+//                    break;
+//                case "2" : locationId =  24;
+//                    break;
+//                case "3" : locationId =  25;
+//                    break;
+//                case "4" : locationId =  26;
+//                    break;
+//                case "5" : locationId =  27;
+//                    break;
+//                case "6" : locationId =  28;
+//                    break;
+//                case "7" : locationId =  29;
+//                    break;
+//            }
+//        }
+//        if(blok == "C") {
+//            switch (poschodie){
+//                case "-1" : locationId =  11;
+//                    break;
+//                case "0" : locationId =  12;
+//                    break;
+//                case "1" : locationId =  13;
+//                    break;
+//                case "2" : locationId =  14;
+//                    break;
+//                case "3" : locationId =  15;
+//                    break;
+//                case "4" : locationId =  16;
+//                    break;
+//                case "5" : locationId =  17;
+//                    break;
+//                case "6" : locationId =  18;
+//                    break;
+//                case "7" : locationId =  19;
+//                    break;
+//                case "8" : locationId =  20;
+//                    break;
+//            }
+//        }
+//        if(blok == "D") {
+//            switch (poschodie){
+//                case "-1" : locationId =  30;
+//                    break;
+//                case "0" : locationId = 31;
+//                    break;
+//                case "1" : locationId =  32;
+//                    break;
+//                case "2" : locationId =  33;
+//                    break;
+//                case "3" : locationId =  34;
+//                    break;
+//                case "4" : locationId =  35;
+//                    break;
+//                case "5" : locationId =  36;
+//                    break;
+//                case "6" : locationId =  37;
+//                    break;
+//                case "7" : locationId =  38;
+//                    break;
+//            }
+//        }
+//        if(blok == "E") {
+//            switch (poschodie){
+//                case "-1" : locationId =  39;
+//                    break;
+//                case "0" : locationId =  40;
+//                    break;
+//                case "1" : locationId =  41;
+//                    break;
+//                case "2" : locationId =  42;
+//                    break;
+//                case "3" : locationId =  43;
+//                    break;
+//                case "4" : locationId =  44;
+//                    break;
+//                case "5" : locationId =  45;
+//                    break;
+//                case "6" : locationId =  46;
+//                    break;
+//                case "7" : locationId =  47;
+//                    break;
+//            }
+//        }
+//        if(blok == "T") {
+//            switch (poschodie){
+//                case "-1" : locationId =  48;
+//                    break;
+//                case "0" : locationId =  49;
+//                    break;
+//                case "1" : locationId = 50;
+//                    break;
+//            }
+//        }
+//
+
+        WebService ws = null;
+        ws = WebService.getInstance(getContext());
+        ws.getLocations(new WebService.OnLocationsReceived() {
+            @Override
+            public void onSuccess(List<Location> list) {
+                if(list != null){
+                    for(Location location: list){
+                        if(location.block.equals(blok) && location.level.equals(poschodie)){
+
+                            Log.v("WS", location.toString());
+
+                            registerAPs registerAPsTask = new registerAPs(location.id, toRegisterAccessPoints, getActivity());
+                            registerAPsTask.execute();
+
+                            Toast t = Toast.makeText(getActivity(), "APs saved to server", Toast.LENGTH_LONG);
+                            t.show();
+
+                            return;
+                        }
+                    }
+                } else {
+                    Toast t = Toast.makeText(getActivity(), "Location list is null :(", Toast.LENGTH_LONG);
+                    t.show();
+                }
+
+            }
+        });
+
+
     }
 
     @Override
@@ -357,6 +392,15 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
                 }
             });
         }
+
+        accessPointsAround.clear();
+
+        for(AccessPoint ap: list){
+            accessPointsAround.add(ap);
+        }
+
+        ((BaseAdapter)wifiAdapter).notifyDataSetChanged();
+//        listView.invalidateViews();
 
     }
 

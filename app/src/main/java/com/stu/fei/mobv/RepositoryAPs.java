@@ -3,6 +3,7 @@ package com.stu.fei.mobv;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -22,6 +23,8 @@ public class RepositoryAPs extends Repository {
         mainWifi.startScan();
         List<ScanResult> wifiList = mainWifi.getScanResults();
 
+        Toast.makeText(context, "Searching for new APs around ..", Toast.LENGTH_LONG).show();
+
         for (int i = 0; i < wifiList.size(); ++i) {
             AccessPoint ap = AccessPoint.createNew(wifiList.get(i));
             if(!this.exist(ap)){
@@ -29,7 +32,7 @@ public class RepositoryAPs extends Repository {
             }
         }
 
-        triggerOnChange();
+        triggerOnChange(this.getList());
 
     }
 }

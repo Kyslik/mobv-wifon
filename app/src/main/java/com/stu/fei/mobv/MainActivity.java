@@ -1,5 +1,6 @@
 package com.stu.fei.mobv;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String KEY_FRAGMENT_TAG = "com.stu.fei.mobv.KEY_FRAGMENT_TAG";
+
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
 
     String[] testArr = {"text1", "text2", "text3"};
@@ -39,11 +42,11 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         // set tab_layout ****************** //
 
@@ -54,12 +57,25 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         viewPager.setAdapter(new FragmentPageAdapter(getSupportFragmentManager(), this));
 
+        if (getIntent().hasExtra(KEY_FRAGMENT_TAG)) {
+            Bundle b = getIntent().getExtras();
+            String fragmentTag = b.getString(KEY_FRAGMENT_TAG);
+
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction()
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .show(getFragmentManager().findFragmentByTag(fragmentTag))
+                    .commit();
+
+        }
+
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
         // set tab_layout ****************** //
 
         repositoryAPs.refresh(getApplicationContext());
+
     }
 
 
@@ -69,11 +85,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void registerClick(View view) {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        Fragment fragment = ((FragmentPageAdapter) viewPager.getAdapter()).getActualFragment();
+        Fragment fragment = ((FragmentPageAdapter) viewPager.getAdapter()).fragment;
         if (fragment instanceof TabFragment) {
             ((TabFragment) fragment).registerAPs();
 
-            ((TabFragment) fragment).clear();
+//            ((TabFragment) fragment).clear();
         }
     }
 
@@ -91,19 +107,19 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        Fragment fragment =  ((FragmentPageAdapter) viewPager.getAdapter()).getActualFragment();
+        Fragment fragment = ((FragmentPageAdapter) viewPager.getAdapter()).getActualFragment();
 
         switch (id) {
             case R.id.refresh:
 
                 if (fragment != null) {
-                    ((IRefreshFragment)fragment).refresh();
+                    ((IRefreshFragment) fragment).refresh();
                 }
                 break;
             case R.id.clear:
 
                 if (fragment != null && fragment instanceof TabFragment) {
-                    ((TabFragment)fragment).clear();
+                    ((TabFragment) fragment).clear();
                 }
 
                 break;

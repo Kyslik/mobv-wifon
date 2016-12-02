@@ -18,8 +18,23 @@ public class AddWifiArrayAdapter extends ArrayAdapter<AccessPoint> {
 
     RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
 
-    AddWifiArrayAdapter(Context context, List<AccessPoint> wifi) {
-        super(context, R.layout.list_item, wifi );
+    List<AccessPoint> accessPoints;
+
+    AddWifiArrayAdapter(Context context, List<AccessPoint> accessPoints) {
+        super(context, R.layout.list_item, accessPoints);
+        this.accessPoints = accessPoints;
+    }
+
+
+    public void setNewAccessPoints(List<AccessPoint> accessPoints){
+        this.accessPoints.clear();
+        this.accessPoints.addAll(accessPoints);
+        notifyDataSetChanged();
+    }
+
+    public void clearAccessPoints(){
+        accessPoints.clear();
+        notifyDataSetChanged();
     }
 
     @Override

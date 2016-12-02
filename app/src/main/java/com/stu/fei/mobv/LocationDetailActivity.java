@@ -1,5 +1,6 @@
 package com.stu.fei.mobv;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -69,7 +70,9 @@ public class LocationDetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                Intent defineFragmentIntent = new Intent();
+                defineFragmentIntent.putExtra(MainActivity.KEY_FRAGMENT_TAG, "location");
+                NavUtils.navigateUpTo(this, defineFragmentIntent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

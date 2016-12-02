@@ -15,7 +15,7 @@ import android.text.style.ImageSpan;
 
 public class FragmentPageAdapter extends FragmentPagerAdapter {
 
-    private Fragment fragment;
+    public Fragment fragment;
     private Fragment fragment2;
     private Fragment fragment3;
 
@@ -58,16 +58,18 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
     }
 
     public Fragment getActualFragment() {
-        if(fragment.isVisible()){
-            return fragment;
-        }
-        if(fragment2.isVisible()){
-            return fragment2;
-        }
-        if(fragment3.isVisible()){
-            return fragment3;
-        }
-        return null;
+        return fragment;
+
+//        if(fragment.isVisible()){
+//            return fragment;
+//        }
+//        if(fragment2.isVisible()){
+//            return fragment2;
+//        }
+//        if(fragment3.isVisible()){
+//            return fragment3;
+//        }
+//        return null;
     }
 
     @Override
