@@ -18,6 +18,8 @@ public class Repository {
     private static Map<Class<? extends Repository>,Repository> INSTANCES_MAP = new java.util.HashMap<Class<? extends Repository>, Repository>();
 
     private List<AccessPoint> list = null;
+    private Location clickedLocation = null;
+    private List<Location> suggestions = null;
 
     interface OnChangeListener{
         public void onChange(List<AccessPoint> list);
@@ -63,6 +65,22 @@ public class Repository {
         }
         return false;
 //        return list.contains(accessPoint);
+    }
+
+    public void setClickedLocation(Location location){
+        clickedLocation = location;
+    }
+
+    public Location getClickedLocation(){
+        return clickedLocation;
+    }
+
+    public void setSuggestions(List suggestions){
+        this.suggestions = suggestions;
+    }
+
+    public List getSuggestions(){
+        return suggestions;
     }
 
     public boolean add(AccessPoint accessPoint){

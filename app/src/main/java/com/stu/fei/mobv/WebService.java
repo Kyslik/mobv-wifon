@@ -28,6 +28,8 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class WebService {
 
+    RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
+
     interface OnSuggestionsReceived{
         public void onSuccess(List<Location> list);
         public void onFailure(String responseString);
@@ -109,6 +111,17 @@ public class WebService {
                                 location.block = suggestion.getString("block");
                                 location.level = suggestion.getString("level");
                                 location.matchCount = suggestionRoot.getInt("match_count");
+
+                                JSONArray accessPointsArr = suggestion.getJSONArray("access_points");
+                                for (int j = 0; j < accessPointsArr.length(); ++j) {
+                                    JSONObject apObj = accessPointsArr.getJSONObject(j);
+                                    AccessPoint ap = AccessPoint.createNew(apObj);
+                                    if(ap != null){
+                                        location.add(ap);
+                                    }
+                                }
+
+
                                 listSuggestions.add(location);
 
                             }
@@ -117,6 +130,7 @@ public class WebService {
                             e.printStackTrace();
                         }
 
+                        repositoryAPs.setSuggestions(listSuggestions);
                         handler.onSuccess(listSuggestions);
                     }
 

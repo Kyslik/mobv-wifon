@@ -2,6 +2,7 @@ package com.stu.fei.mobv;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -40,6 +41,7 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
 
     TextView locationText;
+    Location actualLocation = null;
 
     ListAdapter wifiAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -117,8 +119,6 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
             }
         });
 
-        repositoryAPs.registerOnChangeListener(this);
-
         // list_item //
 
 
@@ -170,6 +170,18 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
         button.setTypeface(font);
 
         locationText = (TextView) view.findViewById(R.id.locationText);
+
+        locationText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                repositoryAPs.setClickedLocation(actualLocation);
+                Intent myIntent = new Intent(getActivity(), LocationDetailActivity.class);
+                getActivity().startActivity(myIntent);
+            }
+        });
+
+        setupActualLocation(repositoryAPs.getSuggestions());
+        repositoryAPs.registerOnChangeListener(this);
 
         return view;
     }
@@ -330,13 +342,7 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
             ws.getSuggestion(list, new WebService.OnSuggestionsReceived() {
                 @Override
                 public void onSuccess(List<Location> list) {
-                    if(list != null && list.size() > 0){
-                        Location location = list.get(0);
-                        locationText.setText("Nachádzate sa na: " + location.getName());
-                    }
-                    else {
-                        locationText.setText("Vaša poloha nebola zistená");
-                    }
+                    setupActualLocation(list);
                 }
 
                 @Override
@@ -347,5 +353,15 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
             });
         }
 
+    }
+
+    private void setupActualLocation(List<Location> list){
+        if(list != null && list.size() > 0){
+            actualLocation = list.get(0);
+            locationText.setText("Nachádzate sa na: " + actualLocation.getName());
+        }
+        else {
+            locationText.setText("Vaša poloha nebola zistená");
+        }
     }
 }
