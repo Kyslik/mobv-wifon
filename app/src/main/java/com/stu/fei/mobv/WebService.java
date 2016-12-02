@@ -30,13 +30,18 @@ public class WebService {
 
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
 
-    interface OnSuggestionsReceived{
+    interface OnSuggestionsReceived {
         public void onSuccess(List<Location> list);
+
         public void onFailure(String responseString);
     }
 
-    interface OnAccessPointsReceived{
+    interface OnAccessPointsReceived {
         public void onSuccess(List<AccessPoint> list);
+    }
+
+    interface OnLocationsReceived {
+        public void onSuccess(List<Location> list);
     }
 
     private final String BASE_PATH = "http://mobv-server.visi.sk/api/v1/";
@@ -61,29 +66,27 @@ public class WebService {
     }
 
     public boolean isOnline() {
-        if(context != null){
+        if (context != null) {
 
             ConnectivityManager cm =
                     (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
             return netInfo != null && netInfo.isConnectedOrConnecting();
-        }
-        else {
+        } else {
             Log.v("WS", "offline");
             return false;
         }
     }
 
-    public void getSuggestion(List<AccessPoint> accessPoints, final OnSuggestionsReceived handler){
-        if (!isOnline())
-        {
+    public void getSuggestion(List<AccessPoint> accessPoints, final OnSuggestionsReceived handler) {
+        if (!isOnline()) {
             Toast t = Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT);
             t.show();
         }
 
         JSONArray arr = new JSONArray();
-        for(AccessPoint ap: accessPoints){
+        for (AccessPoint ap : accessPoints) {
             arr.put(ap.bssid);
         }
 
@@ -94,7 +97,7 @@ public class WebService {
             e.printStackTrace();
         }
 
-        client.post(context, BASE_PATH + "locations/find", entity, "application/json" ,new JsonHttpResponseHandler() {
+        client.post(context, BASE_PATH + "locations/find", entity, "application/json", new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
@@ -116,7 +119,7 @@ public class WebService {
                                 for (int j = 0; j < accessPointsArr.length(); ++j) {
                                     JSONObject apObj = accessPointsArr.getJSONObject(j);
                                     AccessPoint ap = AccessPoint.createNew(apObj);
-                                    if(ap != null){
+                                    if (ap != null) {
                                         location.add(ap);
                                     }
                                 }
@@ -143,5 +146,38 @@ public class WebService {
                     }
                 }
         );
+    }
+
+    public void getLocations(final OnLocationsReceived handler) {
+        if (!isOnline()) {
+            Toast t = Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT);
+            t.show();
+        }
+
+        client.get(context, BASE_PATH + "locations", new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+
+                List<Location> listLocations = new LinkedList<Location>();
+                for (int i = 0; i < response.length(); ++i) {
+
+                    try {
+                        JSONObject locationObj = response.getJSONObject(i);
+                        Location location = new Location();
+                        location.id = locationObj.getInt("id");
+                        location.block = locationObj.getString("block");
+                        location.level = locationObj.getString("level");
+                        listLocations.add(location);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                handler.onSuccess(listLocations);
+            }
+        });
+
     }
 }

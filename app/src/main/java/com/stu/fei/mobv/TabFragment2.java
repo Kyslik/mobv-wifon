@@ -8,9 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,15 +21,36 @@ import java.util.List;
  */
 
 public class TabFragment2 extends Fragment {
+
+    ListAdapter adapter;
+    WebService ws = null;
+    List<Location> listLocations = new LinkedList<>();
+    View view;
+    ListView listView;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.tab_fragment2, container, false);
+         view = inflater.inflate(R.layout.tab_fragment2, container, false);
 
         // list_item //
+        ws = WebService.getInstance(getContext());
+        ws.getLocations(new WebService.OnLocationsReceived() {
+            @Override
+            public void onSuccess(List<Location> list) {
+                listLocations = list;
 
-        new getLocations(getActivity()).execute();
+                adapter = new AddLocationArrayAdapter(getActivity(), listLocations);
+                listView = (ListView) view.findViewById(R.id.listView2);
+                listView.setAdapter(adapter);
+            }
+        });
+
+
+
+
+//        new getLocations(getActivity()).execute();
 
 //        List<Location> locations = new ArrayList<Location>();
 //        AddLocationArrayAdapter locationAdapter = new AddLocationArrayAdapter(getActivity(), locations);
