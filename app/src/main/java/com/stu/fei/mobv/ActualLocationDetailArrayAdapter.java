@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.List;
@@ -13,12 +14,12 @@ import java.util.List;
 /**
  * Created by miroslav.adamec on 13.11.2016.
  */
-public class LocationDetailArrayAdapter extends ArrayAdapter<AccessPoint> {
+public class ActualLocationDetailArrayAdapter extends ArrayAdapter<AccessPoint> {
 
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
     Location actualLocation;
 
-    LocationDetailArrayAdapter(Context context, List<AccessPoint> wifi) {
+    ActualLocationDetailArrayAdapter(Context context, List<AccessPoint> wifi) {
 
         super(context, R.layout.list_item, wifi );
     }
