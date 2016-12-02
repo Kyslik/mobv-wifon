@@ -52,6 +52,11 @@ public class WebService {
         public void onSuccess();
     }
 
+    interface OnAccessPointRemoved {
+        public void onSuccess();
+    }
+
+
     private final String BASE_PATH = "http://mobv-server.visi.sk/api/v1/";
 
     private static WebService ws = null;
@@ -239,6 +244,30 @@ public class WebService {
                 Log.v("WS", "res " + responseString);
             }
         });
+    }
+
+    public void removeAccessPoint(Integer locationId, Integer accessPointId, final OnAccessPointRemoved handler) {
+
+        if (!isOnline()) {
+            Toast t = Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT);
+            t.show();
+        }
+
+        client.delete(context, BASE_PATH + "locations/" + locationId + "/access-points/" + accessPointId, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                        handler.onSuccess();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        Log.v("WS", "onFailure");
+                        Log.v("WS", "statusCode " + statusCode);
+                        Log.v("WS", "res " + responseString);
+                    }
+                }
+        );
     }
 
     public void registerAccessPointsForLocation(List<AccessPoint> accessPoints, Integer locationId, final OnAccessPointsRegistered handler){

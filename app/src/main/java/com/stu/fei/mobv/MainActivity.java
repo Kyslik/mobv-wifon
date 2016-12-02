@@ -31,7 +31,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String KEY_FRAGMENT_TAG = "com.stu.fei.mobv.KEY_FRAGMENT_TAG";
+//    public static final String KEY_FRAGMENT_TAG = "com.stu.fei.mobv.KEY_FRAGMENT_TAG";
 
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
 
@@ -57,17 +57,17 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         viewPager.setAdapter(new FragmentPageAdapter(getSupportFragmentManager(), this));
 
-        if (getIntent().hasExtra(KEY_FRAGMENT_TAG)) {
-            Bundle b = getIntent().getExtras();
-            String fragmentTag = b.getString(KEY_FRAGMENT_TAG);
-
-            FragmentManager fm = getFragmentManager();
-            fm.beginTransaction()
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .show(getFragmentManager().findFragmentByTag(fragmentTag))
-                    .commit();
-
-        }
+//        if (getIntent().hasExtra(KEY_FRAGMENT_TAG)) {
+//            Bundle b = getIntent().getExtras();
+//            String fragmentTag = b.getString(KEY_FRAGMENT_TAG);
+//
+//            FragmentManager fm = getFragmentManager();
+//            fm.beginTransaction()
+//                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+//                    .show(getFragmentManager().findFragmentByTag(fragmentTag))
+//                    .commit();
+//
+//        }
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);

@@ -106,49 +106,46 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
             public void onSuccess(List<Location> list) {
                 locationList = list;
 
-
-                final Spinner dropdown2 = (Spinner)view.findViewById(R.id.spinner2);
-                String[] items2 = new String[]{"A", "B", "C", "D", "E", "T"};
-                ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items2);
-                adapter2.setDropDownViewResource(R.layout.dropdown);
-                dropdown2.setAdapter(adapter2);
-
-                dropdown2.setOnItemSelectedListener(new OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                        final String newValue = (String) dropdown2.getItemAtPosition(position);
-                        String[] floorItems;
-                        switch (newValue) {
-                            case "A" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8"};
-                                break;
-                            case "B" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
-                                break;
-                            case "C" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8"};
-                                break;
-                            case "D" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
-                                break;
-                            case "E" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
-                                break;
-                            case "T" : floorItems = new String[]{"-1", "0", "1"};
-                                break;
-                            default: floorItems = new String[0];
-                        }
-                        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, floorItems);
-                        adapter1.setDropDownViewResource(R.layout.dropdown);
-                        Spinner dropdown1 = (Spinner)view.findViewById(R.id.spinner1);
-                        dropdown1.setAdapter(adapter1);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parentView) {
-                    }
-
-                });
-
-
             }
         });
 
+        final Spinner dropdown2 = (Spinner)view.findViewById(R.id.spinner2);
+        String[] items2 = new String[]{"A", "B", "C", "D", "E", "T"};
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items2);
+        adapter2.setDropDownViewResource(R.layout.dropdown);
+        dropdown2.setAdapter(adapter2);
+
+        dropdown2.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                final String newValue = (String) dropdown2.getItemAtPosition(position);
+                String[] floorItems;
+                switch (newValue) {
+                    case "A" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8"};
+                        break;
+                    case "B" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
+                        break;
+                    case "C" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8"};
+                        break;
+                    case "D" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
+                        break;
+                    case "E" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
+                        break;
+                    case "T" : floorItems = new String[]{"-1", "0", "1"};
+                        break;
+                    default: floorItems = new String[0];
+                }
+                ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, floorItems);
+                adapter1.setDropDownViewResource(R.layout.dropdown);
+                Spinner dropdown1 = (Spinner)view.findViewById(R.id.spinner1);
+                dropdown1.setAdapter(adapter1);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+
+        });
 
         Typeface font = Typeface.createFromAsset( getActivity().getAssets(), "fontawesome-webfont.ttf" );
         Button button = (Button)view.findViewById( R.id.button );
