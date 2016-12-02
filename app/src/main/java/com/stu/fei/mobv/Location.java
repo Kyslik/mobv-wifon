@@ -29,7 +29,7 @@ public class Location {
 
     public String getFormattedUpdatedAt(){
 
-        if(updated_at == null){
+        if(updated_at == null || updated_at == "" || updated_at == "null"){
             return null;
         }
         try {

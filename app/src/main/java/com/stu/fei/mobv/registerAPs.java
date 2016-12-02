@@ -64,6 +64,8 @@ public class registerAPs extends AsyncTask<Void, Void, String> {
             httpURLConnection.connect();
 
             DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+
+
             wr.writeBytes(createJson(666, accessPoints));
             wr.flush();
             wr.close();

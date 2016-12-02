@@ -15,9 +15,6 @@ import java.util.List;
  */
 public class LocationDetailArrayAdapter extends ArrayAdapter<AccessPoint> {
 
-    RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
-    Location actualLocation;
-
     LocationDetailArrayAdapter(Context context, List<AccessPoint> wifi) {
 
         super(context, R.layout.list_item, wifi );
@@ -35,15 +32,9 @@ public class LocationDetailArrayAdapter extends ArrayAdapter<AccessPoint> {
         TextView bssidTextView = (TextView) customView.findViewById(R.id.bssid);
         bssidTextView.setText(wifiInfo.bssid);
 
-        actualLocation = repositoryAPs.getClickedLocation();
-
         final CheckBox checkBox = (CheckBox) customView.findViewById(R.id.checkBox);
-        if(checkBox != null){
-            if(actualLocation.exist(wifiInfo)){
-                checkBox.setChecked(true);
-            }
-            checkBox.setClickable(false);
-        }
+        checkBox.setEnabled(false);
+
 
         return customView;
     }

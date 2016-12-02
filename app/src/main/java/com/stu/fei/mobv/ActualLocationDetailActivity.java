@@ -1,16 +1,12 @@
 package com.stu.fei.mobv;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class ActualLocationDetailActivity extends AppCompatActivity {
 
@@ -44,7 +40,7 @@ public class ActualLocationDetailActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("No location");
         }
 
-        adapter = new LocationDetailArrayAdapter(getApplicationContext(), repositoryAPs.getList());
+        adapter = new ActualLocationDetailArrayAdapter(getApplicationContext(), repositoryAPs.getList());
         ListView listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(adapter);
     }

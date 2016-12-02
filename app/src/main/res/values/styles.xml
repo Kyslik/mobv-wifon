@@ -6,6 +6,9 @@
         <item name="colorPrimary">@color/tabColorBackground</item>
         <item name="colorPrimaryDark">@color/topBackground</item>
         <item name="colorAccent">@color/tabColorTextSelected</item>
+
+        <item name="actionMenuTextColor">@color/blue</item>
+        <item name="android:actionMenuTextColor">@color/blue</item>
     </style>
 
 
@@ -13,6 +16,7 @@
         <item name="tabIndicatorColor">@color/tabIndicatorColor</item>
         <item name="tabSelectedTextColor">@color/tabColorTextSelected</item>
     </style>
+
 
     <style name="tab_layout_style_text" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">15sp</item>

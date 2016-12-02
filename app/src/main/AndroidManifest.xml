@@ -22,6 +22,15 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ActualLocationDetailActivity"
+            android:label="@string/title_activity_location_detail"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.stu.fei.mobv.MainActivity" />
+        </activity>
+        <activity
             android:name=".LocationDetailActivity"
             android:label="@string/title_activity_location_detail"
             android:parentActivityName=".MainActivity"

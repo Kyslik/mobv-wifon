@@ -44,6 +44,10 @@ public class WebService {
         public void onSuccess(List<Location> list);
     }
 
+    interface OnLocationReceived {
+        public void onSuccess(Location location);
+    }
+
     private final String BASE_PATH = "http://mobv-server.visi.sk/api/v1/";
 
     private static WebService ws = null;
@@ -181,5 +185,42 @@ public class WebService {
             }
         });
 
+    }
+
+    public void getLocation(Integer locationId, final OnLocationReceived handler) {
+
+        if (!isOnline()) {
+            Toast t = Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT);
+            t.show();
+        }
+
+        client.get(context, BASE_PATH + "locations/" + locationId, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                try {
+                    Location location = new Location();
+                    location.id = response.getInt("id");
+                    location.block = response.getString("block");
+                    location.level = response.getString("level");
+                    location.updated_at = response.getString("updated_at");
+
+                    JSONArray accessPointsArr = response.getJSONArray("access_points");
+                    for (int j = 0; j < accessPointsArr.length(); ++j) {
+                        JSONObject apObj = accessPointsArr.getJSONObject(j);
+                        AccessPoint ap = AccessPoint.createNew(apObj);
+                        if (ap != null) {
+                            location.add(ap);
+                        }
+                    }
+
+                    handler.onSuccess(location);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 }
