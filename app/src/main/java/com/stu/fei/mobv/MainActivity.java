@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity{
 
         // set tab_layout ****************** //
 
-
+        repositoryAPs.refresh(getApplicationContext());
     }
 
 

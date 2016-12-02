@@ -30,6 +30,27 @@ public class AccessPoint {
         return accessPoint;
     }
 
+    public static AccessPoint createNew(JSONObject object) {
+
+        try {
+            AccessPoint accessPoint = new AccessPoint();
+            accessPoint.ssid = object.getString("ssid");
+
+            accessPoint.bssid = object.getString("bssid");
+//            accessPoint.capabilities = object.getString("capabilities");
+//            accessPoint.level = object.getString("level");
+//            accessPoint.frequency = object.getString("frequency");
+//            accessPoint.timestamp = object.getString("timestamp");
+
+            return accessPoint;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
     public String toString() {
         try {
             JSONObject jsonObject = new JSONObject();

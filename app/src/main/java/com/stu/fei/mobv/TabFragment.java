@@ -2,6 +2,7 @@ package com.stu.fei.mobv;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
@@ -31,11 +34,14 @@ import java.util.List;
  * Created by vlado on 23.11.16.
  */
 
-public class TabFragment extends Fragment{
+public class TabFragment extends Fragment implements Repository.OnChangeListener {
 
     View view;
     RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
+
+    TextView locationText;
+    Location actualLocation = null;
 
     ListAdapter wifiAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -69,8 +75,6 @@ public class TabFragment extends Fragment{
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setEnabled(false);
-
-
 
         // list_item //
 
@@ -164,6 +168,20 @@ public class TabFragment extends Fragment{
         Typeface font = Typeface.createFromAsset( getActivity().getAssets(), "fontawesome-webfont.ttf" );
         Button button = (Button)view.findViewById( R.id.button );
         button.setTypeface(font);
+
+        locationText = (TextView) view.findViewById(R.id.locationText);
+
+        locationText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                repositoryAPs.setClickedLocation(actualLocation);
+                Intent myIntent = new Intent(getActivity(), LocationDetailActivity.class);
+                getActivity().startActivity(myIntent);
+            }
+        });
+
+        setupActualLocation(repositoryAPs.getSuggestions());
+        repositoryAPs.registerOnChangeListener(this);
 
         return view;
     }
@@ -313,5 +331,37 @@ public class TabFragment extends Fragment{
 
         Toast t = Toast.makeText(getActivity(), "APs saved to server", Toast.LENGTH_LONG);
         t.show();
+    }
+
+    @Override
+    public void onChange(List<AccessPoint> list) {
+
+        Log.v("WS", "trigger on Change");
+        WebService ws = WebService.getInstance(getContext());
+        if(list != null){
+            ws.getSuggestion(list, new WebService.OnSuggestionsReceived() {
+                @Override
+                public void onSuccess(List<Location> list) {
+                    setupActualLocation(list);
+                }
+
+                @Override
+                public void onFailure(String responseString) {
+                    Toast t  = Toast.makeText(getActivity(), "Nieco je zle :(", Toast.LENGTH_LONG);
+                    t.show();
+                }
+            });
+        }
+
+    }
+
+    private void setupActualLocation(List<Location> list){
+        if(list != null && list.size() > 0){
+            actualLocation = list.get(0);
+            locationText.setText("Nachádzate sa na: " + actualLocation.getName());
+        }
+        else {
+            locationText.setText("Vaša poloha nebola zistená");
+        }
     }
 }

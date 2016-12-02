@@ -18,6 +18,23 @@ public class Repository {
     private static Map<Class<? extends Repository>,Repository> INSTANCES_MAP = new java.util.HashMap<Class<? extends Repository>, Repository>();
 
     private List<AccessPoint> list = null;
+    private Location clickedLocation = null;
+    private List<Location> suggestions = null;
+
+    interface OnChangeListener{
+        public void onChange(List<AccessPoint> list);
+    }
+
+    List<OnChangeListener> handlers = new LinkedList<>();
+
+    public void registerOnChangeListener(OnChangeListener listener){
+        handlers.add(listener);
+    }
+    public void triggerOnChange(){
+        for(OnChangeListener handler: handlers){
+            handler.onChange(list);
+        }
+    }
 
     protected Repository(){
         list = new LinkedList<>();
@@ -50,21 +67,47 @@ public class Repository {
 //        return list.contains(accessPoint);
     }
 
+    public void setClickedLocation(Location location){
+        clickedLocation = location;
+    }
+
+    public Location getClickedLocation(){
+        return clickedLocation;
+    }
+
+    public void setSuggestions(List suggestions){
+        this.suggestions = suggestions;
+    }
+
+    public List getSuggestions(){
+        return suggestions;
+    }
+
     public boolean add(AccessPoint accessPoint){
         Log.v(TAG, "ADD | AP = " + accessPoint);
-        return list.add(accessPoint);
+        boolean result = list.add(accessPoint);
+
+        triggerOnChange();
+        return result;
     }
 
     public void removeAll(){
         list = new LinkedList<>();
+
+        triggerOnChange();
     }
 
     public boolean remove(AccessPoint accessPoint){
-        return list.remove(accessPoint);
+
+        boolean result = list.remove(accessPoint);
+        triggerOnChange();
+        return result;
     }
 
     public AccessPoint remove(int index){
-        return list.remove(index);
+        AccessPoint result = list.remove(index);
+        triggerOnChange();
+        return result;
     }
 
     public List getList(){

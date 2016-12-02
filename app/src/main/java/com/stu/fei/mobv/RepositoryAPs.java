@@ -29,5 +29,7 @@ public class RepositoryAPs extends Repository {
             }
         }
 
+        triggerOnChange();
+
     }
 }
