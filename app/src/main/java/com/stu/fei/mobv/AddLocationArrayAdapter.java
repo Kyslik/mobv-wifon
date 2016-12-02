@@ -28,8 +28,22 @@ public class AddLocationArrayAdapter extends ArrayAdapter<Location> {
         View customView = inflater.inflate(R.layout.list_item_info, parent, false);
 
         Location location = getItem(position);
+
+        TextView locationShortView = (TextView) customView.findViewById(R.id.locationShort);
+        locationShortView.setText(location.block + location.level);
+
+
         TextView infoTextView = (TextView) customView.findViewById(R.id.location);
         infoTextView.setText(location.getName());
+
+        TextView infoUpdatedAtTextView = (TextView) customView.findViewById(R.id.infoUpdatedAt);
+        String formattedUpdatedAt = location.getFormattedUpdatedAt();
+        if(formattedUpdatedAt != null){
+            infoUpdatedAtTextView.setText(formattedUpdatedAt);
+        } else {
+            infoUpdatedAtTextView.setText("Never updated");
+        }
+
 
         return customView;
     }

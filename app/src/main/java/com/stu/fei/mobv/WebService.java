@@ -167,6 +167,8 @@ public class WebService {
                         location.id = locationObj.getInt("id");
                         location.block = locationObj.getString("block");
                         location.level = locationObj.getString("level");
+                        location.updated_at = locationObj.getString("updated_at");
+
                         listLocations.add(location);
 
                     } catch (JSONException e) {
