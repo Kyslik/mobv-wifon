@@ -183,6 +183,13 @@ public class WebService {
 
                 handler.onSuccess(listLocations);
             }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.v("WS", "onFailure");
+                Log.v("WS", "statusCode " + statusCode);
+                Log.v("WS", "res " + responseString);
+            }
         });
 
     }
@@ -220,6 +227,13 @@ public class WebService {
                     e.printStackTrace();
                 }
 
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.v("WS", "onFailure");
+                Log.v("WS", "statusCode " + statusCode);
+                Log.v("WS", "res " + responseString);
             }
         });
     }
