@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.List;
@@ -13,9 +14,12 @@ import java.util.List;
 /**
  * Created by miroslav.adamec on 13.11.2016.
  */
-public class LocationDetailArrayAdapter extends ArrayAdapter<AccessPoint> {
+public class ActualLocationDetailArrayAdapter extends ArrayAdapter<AccessPoint> {
 
-    LocationDetailArrayAdapter(Context context, List<AccessPoint> wifi) {
+    RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
+    Location actualLocation;
+
+    ActualLocationDetailArrayAdapter(Context context, List<AccessPoint> wifi) {
 
         super(context, R.layout.list_item, wifi );
     }
@@ -32,9 +36,15 @@ public class LocationDetailArrayAdapter extends ArrayAdapter<AccessPoint> {
         TextView bssidTextView = (TextView) customView.findViewById(R.id.bssid);
         bssidTextView.setText(wifiInfo.bssid);
 
-        final CheckBox checkBox = (CheckBox) customView.findViewById(R.id.checkBox);
-        checkBox.setEnabled(false);
+        actualLocation = repositoryAPs.getClickedLocation();
 
+        final CheckBox checkBox = (CheckBox) customView.findViewById(R.id.checkBox);
+        if(checkBox != null){
+            if(actualLocation.exist(wifiInfo)){
+                checkBox.setChecked(true);
+            }
+            checkBox.setClickable(false);
+        }
 
         return customView;
     }

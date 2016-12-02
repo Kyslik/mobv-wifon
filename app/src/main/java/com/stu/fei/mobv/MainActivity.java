@@ -28,7 +28,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
 
@@ -64,15 +64,16 @@ public class MainActivity extends AppCompatActivity{
 
 
     public void exampleImgButton(View view) {
-        Toast.makeText(this,"location", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "location", Toast.LENGTH_SHORT).show();
     }
 
-    public void registerClick(View view)
-    {
+    public void registerClick(View view) {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        Fragment fragment = ((FragmentPageAdapter)viewPager.getAdapter()).fragment;
-        if(fragment instanceof TabFragment) {
+        Fragment fragment = ((FragmentPageAdapter) viewPager.getAdapter()).getActualFragment();
+        if (fragment instanceof TabFragment) {
             ((TabFragment) fragment).registerAPs();
+
+            ((TabFragment) fragment).clear();
         }
     }
 
@@ -89,15 +90,23 @@ public class MainActivity extends AppCompatActivity{
 
         int id = item.getItemId();
 
-        if(id == R.id.refresh){
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        Fragment fragment =  ((FragmentPageAdapter) viewPager.getAdapter()).getActualFragment();
 
-            repositoryAPs.refresh(getApplicationContext());
-            ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-            Fragment fragment = ((FragmentPageAdapter)viewPager.getAdapter()).fragment;
-            if(fragment instanceof TabFragment) {
-                ((TabFragment) fragment).onRefresh();
-            }
+        switch (id) {
+            case R.id.refresh:
 
+                if (fragment != null) {
+                    ((IRefreshFragment)fragment).refresh();
+                }
+                break;
+            case R.id.clear:
+
+                if (fragment != null && fragment instanceof TabFragment) {
+                    ((TabFragment)fragment).clear();
+                }
+
+                break;
         }
 
         return super.onOptionsItemSelected(item);

@@ -22,6 +22,7 @@
             android:layout_marginRight="10dip">
 
             <TextView
+                android:id="@+id/locationShort"
                 android:layout_width="40dip"
                 android:layout_height="40dip"
                 android:background="@drawable/circle"
@@ -46,7 +47,7 @@
 
 
         <TextView
-            android:id="@+id/info"
+            android:id="@+id/infoUpdatedAt"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/location"

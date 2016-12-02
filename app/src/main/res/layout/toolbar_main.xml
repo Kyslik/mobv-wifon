@@ -15,6 +15,6 @@
         android:text="wifi - mobv"
         android:id="@+id/toolbar_title"
         android:textSize="18sp"
-        android:textColor="@color/toolbarText" />
+        android:textColor="@color/blue" />
 
 </android.support.v7.widget.Toolbar>

@@ -1,11 +1,8 @@
 package com.stu.fei.mobv;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,14 +24,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by vlado on 23.11.16.
  */
 
-public class TabFragment extends Fragment implements Repository.OnChangeListener {
+public class TabFragment extends Fragment implements Repository.OnChangeListener, IRefreshFragment {
 
     View view;
     RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
@@ -64,6 +60,7 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
 
             swipeRefreshLayout.setRefreshing(false);
             swipeRefreshLayout.setEnabled(false);
+
         }
     }
 
@@ -175,7 +172,7 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
             @Override
             public void onClick(View view) {
                 repositoryAPs.setClickedLocation(actualLocation);
-                Intent myIntent = new Intent(getActivity(), LocationDetailActivity.class);
+                Intent myIntent = new Intent(getActivity(), ActualLocationDetailActivity.class);
                 getActivity().startActivity(myIntent);
             }
         });
@@ -186,9 +183,17 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
         return view;
     }
 
+
     public void refresh(){
-        ((BaseAdapter)wifiAdapter).notifyDataSetChanged();
+        repositoryAPs.refresh(getContext());
     }
+
+    public void clear(){
+        repositoryCheckedAPs.removeAll();
+        repositoryAPs.removeAll();
+        repositoryAPs.refresh(getContext());
+    }
+
 
     public void registerAPs() {
         ListView listView = (ListView) view.findViewById(R.id.listView);

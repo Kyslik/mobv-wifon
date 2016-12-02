@@ -15,18 +15,16 @@ import android.text.style.ImageSpan;
 
 public class FragmentPageAdapter extends FragmentPagerAdapter {
 
-    public  Fragment fragment;
+    private Fragment fragment;
     private Fragment fragment2;
     private Fragment fragment3;
-
-
 
     private int[] imageResId = {
             R.drawable.home,
             R.drawable.location,
             R.drawable.search_white
     };
-    private String[] tabtitle = new String[]{"home","location", "search"};
+    private String[] tabtitle = new String[]{"home", "location", "search"};
 
     Context context;
 
@@ -34,16 +32,14 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
         super(fm);
         this.context = context;
 
-            fragment = new TabFragment();
+        fragment = new TabFragment();
 
-            fragment2 = new TabFragment2();
+        fragment2 = new TabFragment2();
 
-            fragment3 = new TabFragment3();
-
+        fragment3 = new TabFragment3();
 
 
     }
-
 
 
     @Override
@@ -51,19 +47,27 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
 
         //Fragment fragment;
 
-        if(position == 0){
-            return fragment ;
-        }
-        else if(position == 1){
-            return fragment2 ;
-        }else{
+        if (position == 0) {
+            return fragment;
+        } else if (position == 1) {
+            return fragment2;
+        } else {
             return fragment3;
         }
 
     }
 
     public Fragment getActualFragment() {
-        return fragment;
+        if(fragment.isVisible()){
+            return fragment;
+        }
+        if(fragment2.isVisible()){
+            return fragment2;
+        }
+        if(fragment3.isVisible()){
+            return fragment3;
+        }
+        return null;
     }
 
     @Override
