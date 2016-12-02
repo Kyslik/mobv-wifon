@@ -7,6 +7,7 @@
     <string name="icon_upload_btn">&#xf0ee;</string>
     <string name="icon_refresh">&#xf021;</string>
     <string name="title_activity_main2">Main2Activity</string>
-    <string name="title_activity_location_detail">LocationDetailActivity</string>
+    <string name="title_activity_location_detail">Loading ..</string>
     <string name="clear">clear</string>
+    <string name="loading">Loading ..</string>
 </resources>
