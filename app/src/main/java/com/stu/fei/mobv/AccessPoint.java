@@ -50,6 +50,40 @@ public class AccessPoint {
         return null;
     }
 
+    public JSONObject toJSONObject(){
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.accumulate("ssid", ssid);
+            jsonObject.accumulate("bssid", bssid);
+            jsonObject.accumulate("level", level);
+            jsonObject.accumulate("capabilities", capabilities);
+            jsonObject.accumulate("timestamp", timestamp);
+
+            return jsonObject;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public JSONObject toJSONObject(String deviceId){
+
+        JSONObject jsonObject = this.toJSONObject();
+        try {
+            if(jsonObject != null){
+                jsonObject.accumulate("device_id", deviceId);
+
+                return jsonObject;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     @Override
     public String toString() {
         try {

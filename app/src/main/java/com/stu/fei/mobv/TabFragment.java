@@ -31,14 +31,16 @@ import java.util.List;
  * Created by vlado on 23.11.16.
  */
 
-public class TabFragment extends Fragment implements Repository.OnChangeListener, IRefreshFragment {
+public class TabFragment extends Fragment implements Repository.OnChangeListener, IRefreshFragment, WebService.OnAccessPointsRegistered {
 
     View view;
     RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
+    WebService ws = null;
 
     TextView locationText;
     Location actualLocation = null;
+    List<Location> locationList = null;
 
     List<AccessPoint> accessPointsAround = new LinkedList<>();
 
@@ -78,31 +80,6 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setEnabled(false);
 
-        // list_item //
-
-        //String[] dataSource = {"eduroam", "C606"};
-        //ArrayAdapter<String> wifiAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item, R.id.ssid, dataSource);
-
-//        List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
-//        for (int i = 0; i < 3; ++i) {
-//            AccessPoint temp =  new AccessPoint();
-//            temp.ssid = "nejake SSID";
-//            temp.bssid = "nejake BSSID";
-//            accessPoints.add(temp);
-//        }
-
-//        WifiManager mainWifi = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
-//        mainWifi.startScan();
-//        List<ScanResult> wifiList =mainWifi.getScanResults();
-//
-//        List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
-//        for (int i = 0; i < wifiList.size(); ++i) {
-//            accessPoints.add(AccessPoint.createNew(wifiList.get(i)));
-//        }
-
-//        repositoryAPs.refresh(getContext());
-
-
         wifiAdapter = new AddWifiArrayAdapter(getActivity(), accessPointsAround);
         listView = (ListView) view.findViewById(R.id.listView);
         listView.setAdapter(wifiAdapter);
@@ -122,51 +99,56 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
             }
         });
 
-        // list_item //
 
-
-
-        //String[] items1 = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
-        //ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items1);
-        //dropdown1.setAdapter(adapter1);
-
-        final Spinner dropdown2 = (Spinner)view.findViewById(R.id.spinner2);
-        String[] items2 = new String[]{"A", "B", "C", "D", "E", "T"};
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items2);
-        adapter2.setDropDownViewResource(R.layout.dropdown);
-        dropdown2.setAdapter(adapter2);
-
-        dropdown2.setOnItemSelectedListener(new OnItemSelectedListener() {
+        ws = WebService.getInstance(getContext());
+        ws.getLocations(new WebService.OnLocationsReceived() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                final String newValue = (String) dropdown2.getItemAtPosition(position);
-                String[] floorItems;
-                switch (newValue) {
-                    case "A" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8"};
-                        break;
-                    case "B" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
-                        break;
-                    case "C" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8"};
-                        break;
-                    case "D" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
-                        break;
-                    case "E" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
-                        break;
-                    case "T" : floorItems = new String[]{"-1", "0", "1"};
-                        break;
-                    default: floorItems = new String[0];
-                }
-                ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, floorItems);
-                adapter1.setDropDownViewResource(R.layout.dropdown);
-                Spinner dropdown1 = (Spinner)view.findViewById(R.id.spinner1);
-                dropdown1.setAdapter(adapter1);
-            }
+            public void onSuccess(List<Location> list) {
+                locationList = list;
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
 
+                final Spinner dropdown2 = (Spinner)view.findViewById(R.id.spinner2);
+                String[] items2 = new String[]{"A", "B", "C", "D", "E", "T"};
+                ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items2);
+                adapter2.setDropDownViewResource(R.layout.dropdown);
+                dropdown2.setAdapter(adapter2);
+
+                dropdown2.setOnItemSelectedListener(new OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                        final String newValue = (String) dropdown2.getItemAtPosition(position);
+                        String[] floorItems;
+                        switch (newValue) {
+                            case "A" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8"};
+                                break;
+                            case "B" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
+                                break;
+                            case "C" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8"};
+                                break;
+                            case "D" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
+                                break;
+                            case "E" : floorItems = new String[]{"-1", "0", "1", "2", "3", "4", "5", "6", "7"};
+                                break;
+                            case "T" : floorItems = new String[]{"-1", "0", "1"};
+                                break;
+                            default: floorItems = new String[0];
+                        }
+                        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, floorItems);
+                        adapter1.setDropDownViewResource(R.layout.dropdown);
+                        Spinner dropdown1 = (Spinner)view.findViewById(R.id.spinner1);
+                        dropdown1.setAdapter(adapter1);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parentView) {
+                    }
+
+                });
+
+
+            }
         });
+
 
         Typeface font = Typeface.createFromAsset( getActivity().getAssets(), "fontawesome-webfont.ttf" );
         Button button = (Button)view.findViewById( R.id.button );
@@ -183,12 +165,10 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
             }
         });
 
-//        setupActualLocation(repositoryAPs.getSuggestions());
         repositoryAPs.registerOnChangeListener(this);
 
         return view;
     }
-
 
     public void refresh(){
         repositoryAPs.refresh(getContext());
@@ -201,174 +181,32 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
 
 
     public void registerAPs() {
-        ListView listView = (ListView) view.findViewById(R.id.listView);
+
         final List<AccessPoint> toRegisterAccessPoints = repositoryCheckedAPs.getList();
-//        for(int i = 0; i < listView.getCount(); i++) {
-//            CheckBox checkBox = (CheckBox) listView.getChildAt(i).findViewById(R.id.checkBox);
-//            if(checkBox.isChecked()) {
-//                toRegisterAccessPoints.add((AccessPoint) listView.getAdapter().getItem(i));
-//            }
-//        }
-        final String poschodie = ((Spinner) view.findViewById(R.id.spinner1)).getSelectedItem().toString();
+
+        final String level = ((Spinner) view.findViewById(R.id.spinner1)).getSelectedItem().toString();
         final String blok = ((Spinner) view.findViewById(R.id.spinner2)).getSelectedItem().toString();
-        int locationId = 0;
 
+        repositoryAPs.getLocationList();
 
+        if(locationList != null){
+            for(Location location: locationList){
+                if(location.block.equals(blok) && location.level.equals(level)){
 
+                    Log.v("WS", location.toString());
 
-//        if(blok == "A") {
-//            switch (poschodie){
-//                case "-1" : locationId =  1;
-//                    break;
-//                case "0" : locationId =  2;
-//                    break;
-//                case "1" : locationId =  3;
-//                    break;
-//                case "2" : locationId =  4;
-//                    break;
-//                case "3" : locationId =  5;
-//                    break;
-//                case "4" : locationId =  6;
-//                    break;
-//                case "5" : locationId =  7;
-//                    break;
-//                case "6" : locationId =  8;
-//                    break;
-//                case "7" : locationId =  9;
-//                    break;
-//                case "8" : locationId =  10;
-//                    break;
-//            }
-//        }
-//        if(blok == "B") {
-//            switch (poschodie){
-//                case "-1" : locationId =  21;
-//                    break;
-//                case "0" : locationId =  22;
-//                    break;
-//                case "1" : locationId =  23;
-//                    break;
-//                case "2" : locationId =  24;
-//                    break;
-//                case "3" : locationId =  25;
-//                    break;
-//                case "4" : locationId =  26;
-//                    break;
-//                case "5" : locationId =  27;
-//                    break;
-//                case "6" : locationId =  28;
-//                    break;
-//                case "7" : locationId =  29;
-//                    break;
-//            }
-//        }
-//        if(blok == "C") {
-//            switch (poschodie){
-//                case "-1" : locationId =  11;
-//                    break;
-//                case "0" : locationId =  12;
-//                    break;
-//                case "1" : locationId =  13;
-//                    break;
-//                case "2" : locationId =  14;
-//                    break;
-//                case "3" : locationId =  15;
-//                    break;
-//                case "4" : locationId =  16;
-//                    break;
-//                case "5" : locationId =  17;
-//                    break;
-//                case "6" : locationId =  18;
-//                    break;
-//                case "7" : locationId =  19;
-//                    break;
-//                case "8" : locationId =  20;
-//                    break;
-//            }
-//        }
-//        if(blok == "D") {
-//            switch (poschodie){
-//                case "-1" : locationId =  30;
-//                    break;
-//                case "0" : locationId = 31;
-//                    break;
-//                case "1" : locationId =  32;
-//                    break;
-//                case "2" : locationId =  33;
-//                    break;
-//                case "3" : locationId =  34;
-//                    break;
-//                case "4" : locationId =  35;
-//                    break;
-//                case "5" : locationId =  36;
-//                    break;
-//                case "6" : locationId =  37;
-//                    break;
-//                case "7" : locationId =  38;
-//                    break;
-//            }
-//        }
-//        if(blok == "E") {
-//            switch (poschodie){
-//                case "-1" : locationId =  39;
-//                    break;
-//                case "0" : locationId =  40;
-//                    break;
-//                case "1" : locationId =  41;
-//                    break;
-//                case "2" : locationId =  42;
-//                    break;
-//                case "3" : locationId =  43;
-//                    break;
-//                case "4" : locationId =  44;
-//                    break;
-//                case "5" : locationId =  45;
-//                    break;
-//                case "6" : locationId =  46;
-//                    break;
-//                case "7" : locationId =  47;
-//                    break;
-//            }
-//        }
-//        if(blok == "T") {
-//            switch (poschodie){
-//                case "-1" : locationId =  48;
-//                    break;
-//                case "0" : locationId =  49;
-//                    break;
-//                case "1" : locationId = 50;
-//                    break;
-//            }
-//        }
-//
+//                            registerAPs registerAPsTask = new registerAPs(location.id, toRegisterAccessPoints, getActivity());
+//                            registerAPsTask.execute();
 
-        WebService ws = null;
-        ws = WebService.getInstance(getContext());
-        ws.getLocations(new WebService.OnLocationsReceived() {
-            @Override
-            public void onSuccess(List<Location> list) {
-                if(list != null){
-                    for(Location location: list){
-                        if(location.block.equals(blok) && location.level.equals(poschodie)){
+                    ws.registerAccessPointsForLocation(toRegisterAccessPoints, location.id, this);
 
-                            Log.v("WS", location.toString());
-
-                            registerAPs registerAPsTask = new registerAPs(location.id, toRegisterAccessPoints, getActivity());
-                            registerAPsTask.execute();
-
-                            Toast t = Toast.makeText(getActivity(), "APs saved to server", Toast.LENGTH_LONG);
-                            t.show();
-
-                            return;
-                        }
-                    }
-                } else {
-                    Toast t = Toast.makeText(getActivity(), "Location list is null :(", Toast.LENGTH_LONG);
-                    t.show();
+                    return;
                 }
-
             }
-        });
+        } else {
+            Toast t = Toast.makeText(getActivity(), "Location list is null :(", Toast.LENGTH_LONG);
+            t.show();
+        }
 
 
     }
@@ -412,5 +250,14 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
         else {
             locationText.setText("Vaša poloha nebola zistená");
         }
+    }
+
+    @Override
+    public void onSuccess() {
+
+        Toast t = Toast.makeText(getActivity(), "Access Points was successfully registered", Toast.LENGTH_LONG);
+        t.show();
+
+        clear();
     }
 }
