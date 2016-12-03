@@ -1,6 +1,7 @@
 package com.stu.fei.mobv;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,7 +27,9 @@ import java.util.List;
 public class TabFragment2 extends Fragment implements AdapterView.OnItemClickListener, IRefreshFragment {
 
     ListAdapter adapter;
+    RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
     WebService ws = null;
+
     List<Location> listLocations = new LinkedList<>();
     View view;
     ListView listView;
@@ -37,25 +40,15 @@ public class TabFragment2 extends Fragment implements AdapterView.OnItemClickLis
 
         view = inflater.inflate(R.layout.tab_fragment2, container, false);
 
+        ws = WebService.getInstance(getContext());
+
         listView = (ListView) view.findViewById(R.id.listView2);
         listView.setOnItemClickListener(this);
 
-        // list_item //
-        ws = WebService.getInstance(getContext());
-        ws.getLocations(new WebService.OnLocationsReceived() {
-            @Override
-            public void onSuccess(List<Location> list) {
-                listLocations = list;
 
-                adapter = new AddLocationArrayAdapter(getActivity(), listLocations);
+        adapter = new AddLocationArrayAdapter(getActivity(), listLocations);
 
-                listView.setAdapter(adapter);
-
-            }
-        });
-
-
-
+        listView.setAdapter(adapter);
 
 //        new getLocations(getActivity()).execute();
 
@@ -95,4 +88,32 @@ public class TabFragment2 extends Fragment implements AdapterView.OnItemClickLis
     public void refresh() {
 
     }
+
+    @Override
+    public void setMenuVisibility(final boolean visible) {
+        super.setMenuVisibility(visible);
+        if (visible) {
+
+            ws = WebService.getInstance(getContext());
+
+            if(repositoryAPs.getLocationList() == null)
+            {
+                ws.getLocations(new WebService.OnLocationsReceived() {
+                    @Override
+                    public void onSuccess(List<Location> list) {
+                        repositoryAPs.setLocationList(list);
+
+                        listLocations.clear();
+                        for(Location location : list) {
+                            listLocations.add(location);
+                        }
+                        ((BaseAdapter)adapter).notifyDataSetChanged();
+
+                    }
+                });
+            }
+
+        }
+    }
+
 }

@@ -54,6 +54,7 @@ public class WebService {
 
     interface OnAccessPointRemoved {
         public void onSuccess();
+        public void onFailure();
     }
 
 
@@ -251,6 +252,7 @@ public class WebService {
         if (!isOnline()) {
             Toast t = Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT);
             t.show();
+            handler.onFailure();
         }
 
         client.delete(context, BASE_PATH + "locations/" + locationId + "/access-points/" + accessPointId, new JsonHttpResponseHandler() {
@@ -265,6 +267,7 @@ public class WebService {
                         Log.v("WS", "onFailure");
                         Log.v("WS", "statusCode " + statusCode);
                         Log.v("WS", "res " + responseString);
+                        handler.onFailure();
                     }
                 }
         );

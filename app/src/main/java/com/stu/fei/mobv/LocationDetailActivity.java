@@ -32,6 +32,8 @@ public class LocationDetailActivity extends AppCompatActivity {
 
     List<AccessPoint> accessPoints = new LinkedList<>();
 
+    List<AccessPoint> dissmisableAccessPoints = new LinkedList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,15 +99,28 @@ public class LocationDetailActivity extends AppCompatActivity {
     }
 
     private void removeAcessPoint(final int position) {
-        AccessPoint ap = accessPoints.get(position);
+        final AccessPoint ap = accessPoints.get(position);
+//        dissmisableAccessPoints.add(ap);
+
+        accessPoints.remove(position);
+        ((BaseAdapter) adapter).notifyDataSetChanged();
 
         ws.removeAccessPoint(locationId, ap.id, new WebService.OnAccessPointRemoved() {
             @Override
             public void onSuccess() {
 
-                accessPoints.remove(position);
-                ((BaseAdapter) adapter).notifyDataSetChanged();
+//                dissmisableAccessPoints.remove(ap);
             }
+
+            @Override
+            public void onFailure() {
+
+                accessPoints.add(ap);
+                ((BaseAdapter) adapter).notifyDataSetChanged();
+
+            }
+
+
         });
 
     }
