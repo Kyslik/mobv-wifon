@@ -50,10 +50,12 @@ public class WebService {
 
     interface OnAccessPointsRegistered {
         public void onSuccess();
+        public void onFailure();
     }
 
     interface OnAccessPointRemoved {
         public void onSuccess();
+
         public void onFailure();
     }
 
@@ -273,7 +275,7 @@ public class WebService {
         );
     }
 
-    public void registerAccessPointsForLocation(List<AccessPoint> accessPoints, Integer locationId, final OnAccessPointsRegistered handler){
+    public void registerAccessPointsForLocation(List<AccessPoint> accessPoints, Integer locationId, final OnAccessPointsRegistered handler) {
         if (!isOnline()) {
             Toast t = Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT);
             t.show();
@@ -282,9 +284,9 @@ public class WebService {
         String devideId = "";
 
         JSONArray jsonArray = new JSONArray();
-        for(AccessPoint ap :accessPoints){
+        for (AccessPoint ap : accessPoints) {
             JSONObject jsonObject = ap.toJSONObject(devideId);
-            if(jsonObject != null){
+            if (jsonObject != null) {
                 jsonArray.put(jsonObject);
             }
         }
@@ -303,10 +305,19 @@ public class WebService {
                     }
 
                     @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject) {
+                        Log.v("WS", "onFailure");
+                        Log.v("WS", "statusCode " + statusCode);
+                        Log.v("WS", "res " + jsonObject.toString());
+                        handler.onFailure();
+                    }
+
+                    @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         Log.v("WS", "onFailure");
                         Log.v("WS", "statusCode " + statusCode);
                         Log.v("WS", "res " + responseString);
+                        handler.onFailure();
                     }
                 }
         );

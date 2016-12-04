@@ -2,10 +2,13 @@ package com.stu.fei.mobv;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,8 +34,9 @@ public class LocationDetailActivity extends AppCompatActivity {
     ListView listView = null;
 
     List<AccessPoint> accessPoints = new LinkedList<>();
+    List<AccessPoint> accessPointsAround = new LinkedList<>();
 
-    List<AccessPoint> dissmisableAccessPoints = new LinkedList<>();
+    RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,7 @@ public class LocationDetailActivity extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.listView);
 
-        adapter = new LocationDetailArrayAdapter(getApplicationContext(), accessPoints);
+        adapter = new LocationDetailArrayAdapter(getApplicationContext(), accessPoints, accessPointsAround);
         listView.setAdapter(adapter);
 
         ws = WebService.getInstance(getApplicationContext());
@@ -144,14 +148,14 @@ public class LocationDetailActivity extends AppCompatActivity {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 Intent defineFragmentIntent = new Intent(getApplication(), MainActivity.class);
-//                Intent defineFragmentIntent = new Intent();
-//                defineFragmentIntent.putExtra(MainActivity.KEY_FRAGMENT_TAG, "location");
-//                NavUtils.navigateUpTo(this, defineFragmentIntent);
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
 
-            case R.id.remove:
-                Toast.makeText(getApplicationContext(), "clicked remove", Toast.LENGTH_LONG).show();
+            case R.id.compare:
+
+                accessPointsAround.clear();
+                accessPointsAround.addAll(repositoryAPs.getList());
+                ((BaseAdapter) adapter).notifyDataSetChanged();
 
                 break;
         }
@@ -167,11 +171,20 @@ public class LocationDetailActivity extends AppCompatActivity {
         }
     }
 
-    public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.remove)
-            Toast.makeText(getApplicationContext(), "Remove Clicked", Toast.LENGTH_LONG).show();
-//        if(item.getTitle()=="Delete")Toast.makeText(getApplicationContext(), "Delete Clicked", Toast.LENGTH_LONG).show();
+//    public boolean onContextItemSelected(MenuItem item) {
+//        if (item.getItemId() == R.id.remove)
+//            Toast.makeText(getApplicationContext(), "Remove Clicked", Toast.LENGTH_LONG).show();
+////        if(item.getTitle()=="Delete")Toast.makeText(getApplicationContext(), "Delete Clicked", Toast.LENGTH_LONG).show();
+//        return true;
+//    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.location_detail_menu, menu);
         return true;
     }
+
 
 }

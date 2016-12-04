@@ -1,6 +1,7 @@
 package com.stu.fei.mobv;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -43,7 +44,7 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
     Location actualLocation = null;
     List<Location> locationList = null;
 
-    List<AccessPoint> accessPointsAround = new LinkedList<>();
+    List<AccessPoint> accessPointsAround = repositoryAPs.getList();
 
 
     ListAdapter wifiAdapter;
@@ -77,6 +78,10 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.tab_fragment, container, false);
+
+        if(accessPointsAround == null){
+            accessPointsAround = new LinkedList<>();
+        }
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setEnabled(false);
@@ -175,6 +180,9 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
     public void clear(){
         repositoryCheckedAPs.removeAll();
         repositoryAPs.removeAll();
+
+        accessPointsAround.clear();
+        ((BaseAdapter)wifiAdapter).notifyDataSetChanged();
     }
 
 
@@ -183,39 +191,66 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
         final List<AccessPoint> toRegisterAccessPoints = repositoryCheckedAPs.getList();
 
         final String level = ((Spinner) view.findViewById(R.id.spinner1)).getSelectedItem().toString();
-        final String blok = ((Spinner) view.findViewById(R.id.spinner2)).getSelectedItem().toString();
+        final String block = ((Spinner) view.findViewById(R.id.spinner2)).getSelectedItem().toString();
 
-        repositoryAPs.getLocationList();
+        ws = WebService.getInstance(getContext());
 
-        if(locationList != null){
-            for(Location location: locationList){
-                if(location.block.equals(blok) && location.level.equals(level)){
+        if(repositoryAPs.getLocationList() == null)
+        {
+            ws.getLocations(new WebService.OnLocationsReceived() {
+                @Override
+                public void onSuccess(List<Location> list) {
+                    repositoryAPs.setLocationList(list);
 
-                    Log.v("WS", location.toString());
+                    locationList.clear();
+                    locationList.addAll(list);
 
-//                            registerAPs registerAPsTask = new registerAPs(location.id, toRegisterAccessPoints, getActivity());
-//                            registerAPsTask.execute();
-
-                    ws.registerAccessPointsForLocation(toRegisterAccessPoints, location.id, this);
-
-                    return;
+                    register(level, block, toRegisterAccessPoints);
                 }
-            }
+            });
         } else {
-            Toast t = Toast.makeText(getActivity(), "Location list is null :(", Toast.LENGTH_LONG);
-            t.show();
+            register(level, block, toRegisterAccessPoints);
         }
+
+//        if(locationList != null){
+//            for(Location location: locationList){
+//                if(location.block.equals(blok) && location.level.equals(level)){
+//
+//                    Log.v("WS", location.toString());
+//
+////                            registerAPs registerAPsTask = new registerAPs(location.id, toRegisterAccessPoints, getActivity());
+////                            registerAPsTask.execute();
+//
+//                    ws.registerAccessPointsForLocation(toRegisterAccessPoints, location.id, this);
+//
+//                    return;
+//                }
+//            }
+//        } else {
+//            Toast t = Toast.makeText(getActivity(), "Location list is null :(", Toast.LENGTH_LONG);
+//            t.show();
+//        }
 
 
     }
 
-    @Override
-    public void onChange(List<AccessPoint> list) {
+    private void register(String level, String block, List<AccessPoint> toRegisterAccessPoints){
+        for(Location location: locationList){
+            if(location.block.equals(block) && location.level.equals(level)){
 
-        Log.v("WS", "trigger on Change");
+                Log.v("WS", location.toString());
+
+                ws.registerAccessPointsForLocation(toRegisterAccessPoints, location.id, this);
+
+                return;
+            }
+        }
+    }
+
+    public void findMe(){
         WebService ws = WebService.getInstance(getContext());
-        if(list != null){
-            ws.getSuggestion(list, new WebService.OnSuggestionsReceived() {
+        if(accessPointsAround != null && accessPointsAround.size() > 0){
+            ws.getSuggestion(accessPointsAround, new WebService.OnSuggestionsReceived() {
                 @Override
                 public void onSuccess(List<Location> list) {
                     setupActualLocation(list);
@@ -227,13 +262,17 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
                     t.show();
                 }
             });
+        } else {
+            Toast.makeText(getContext(), "Please scan your position first.", Toast.LENGTH_LONG).show();
         }
+    }
 
-        accessPointsAround.clear();
+    @Override
+    public void onChange(List<AccessPoint> list) {
 
-        for(AccessPoint ap: list){
-            accessPointsAround.add(ap);
-        }
+        Log.v("WS", "trigger on Change");
+
+        accessPointsAround.addAll(list);
 
         ((BaseAdapter)wifiAdapter).notifyDataSetChanged();
 //        listView.invalidateViews();
@@ -258,5 +297,14 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
 
         clear();
     }
+
+    @Override
+    public void onFailure() {
+
+        Toast t = Toast.makeText(getActivity(), "Server is not responding", Toast.LENGTH_LONG);
+        t.show();
+
+    }
+
 
 }

@@ -30,7 +30,7 @@ public class TabFragment2 extends Fragment implements AdapterView.OnItemClickLis
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
     WebService ws = null;
 
-    List<Location> listLocations = new LinkedList<>();
+    List<Location> listLocations = repositoryAPs.getLocationList();
     View view;
     ListView listView;
 
@@ -45,6 +45,9 @@ public class TabFragment2 extends Fragment implements AdapterView.OnItemClickLis
         listView = (ListView) view.findViewById(R.id.listView2);
         listView.setOnItemClickListener(this);
 
+        if(listLocations == null){
+            listLocations = new LinkedList<>();
+        }
 
         adapter = new AddLocationArrayAdapter(getActivity(), listLocations);
 
@@ -104,9 +107,7 @@ public class TabFragment2 extends Fragment implements AdapterView.OnItemClickLis
                         repositoryAPs.setLocationList(list);
 
                         listLocations.clear();
-                        for(Location location : list) {
-                            listLocations.add(location);
-                        }
+                        listLocations.addAll(list);
                         ((BaseAdapter)adapter).notifyDataSetChanged();
 
                     }

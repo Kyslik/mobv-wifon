@@ -123,6 +123,12 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 break;
+
+            case R.id.findMe:
+                if (fragment != null && fragment instanceof TabFragment) {
+                    ((TabFragment) fragment).findMe();
+                }
+                break;
         }
 
         return super.onOptionsItemSelected(item);

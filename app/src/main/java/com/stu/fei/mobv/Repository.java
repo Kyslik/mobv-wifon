@@ -71,7 +71,7 @@ public class Repository {
     }
 
     public void setLocationList(List locationlist){
-        this.locationlist = this.locationlist;
+        this.locationlist = locationlist;
     }
 
     public List getLocationList(){
