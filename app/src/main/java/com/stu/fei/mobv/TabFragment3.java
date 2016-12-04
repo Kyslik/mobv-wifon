@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,7 +47,7 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
 
     ListAdapter adapter;
 
-    List<NavigationFragmentAdapter.Step> navigationSteps;
+    List<NavigationFragmentAdapter.Step> navigationSteps = new LinkedList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,9 +72,9 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_dropdown_item_1line, LOCATIONS);
-        AutoCompleteTextView textView = (AutoCompleteTextView) view
+        AutoCompleteTextView searchForRoomTextView = (AutoCompleteTextView) view
                 .findViewById(R.id.search_for_room);
-        textView.setAdapter(arrayAdapter);
+        searchForRoomTextView.setAdapter(arrayAdapter);
 
 
         locationText = (TextView) view.findViewById(R.id.locationText);
@@ -88,13 +90,6 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
 
         repositoryAPs.registerOnChangeListener(this);
 
-        if(navigationSteps == null){
-            navigationSteps = new LinkedList<>();
-            navigationSteps.add(new NavigationFragmentAdapter.Step(1, "Blok A - prízemie", "Pouzite vztah na prizemie"));
-            navigationSteps.add(new NavigationFragmentAdapter.Step(2, "Blok B - prizemie", "Pokracujte po prizemi rovno"));
-            navigationSteps.add(new NavigationFragmentAdapter.Step(3, "Blok C - prizemie", "Pouzite vytah na 6. poschodie"));
-            navigationSteps.add(new NavigationFragmentAdapter.Step(4, "Blok C - 6. poschodie", "Ste na 6. poschodi bloku C"));
-        }
 
         adapter = new NavigationFragmentAdapter(getActivity(), navigationSteps);
 
@@ -102,7 +97,48 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
 
         searchingIndicator = (TextView) view.findViewById(R.id.searchingIndicator);
 
+
+        searchForRoomTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                navigateForNewRoom(String.valueOf(charSequence));
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         return view;
+    }
+
+    private void navigateForNewRoom(String roomText){
+
+        if(actualLocation != null){
+            navigationSteps.clear();
+            List<NavigationFragmentAdapter.Step> newSteps = Navigation.navigate(actualLocation, roomText);
+            navigationSteps.addAll(newSteps);
+
+            ((BaseAdapter)adapter).notifyDataSetChanged();
+        } else {
+            Toast.makeText(getContext(), "Please scan your position first.", Toast.LENGTH_LONG).show();
+        }
+
+        // vyrataj a vrat navigation items
+//        navigationSteps.add(new NavigationFragmentAdapter.Step(1, "Blok A - prízemie", "Pouzite vztah na prizemie"));
+//        navigationSteps.add(new NavigationFragmentAdapter.Step(2, "Blok B - prizemie", "Pokracujte po prizemi rovno"));
+//        navigationSteps.add(new NavigationFragmentAdapter.Step(3, "Blok C - prizemie", "Pouzite vytah na 6. poschodie"));
+//        navigationSteps.add(new NavigationFragmentAdapter.Step(4, "Blok C - 6. poschodie", "Ste na 6. poschodi bloku C"));
+
+
     }
 
     @Override
