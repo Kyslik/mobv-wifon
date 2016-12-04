@@ -1,6 +1,8 @@
 package com.stu.fei.mobv;
 
 import android.app.FragmentManager;
+import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -9,8 +11,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +22,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -33,9 +39,11 @@ public class MainActivity extends AppCompatActivity {
 
 //    public static final String KEY_FRAGMENT_TAG = "com.stu.fei.mobv.KEY_FRAGMENT_TAG";
 
+//    private ListView roomListView;
+
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
 
-    String[] testArr = {"text1", "text2", "text3"};
+//    String[] testArr = {"text1", "text2", "text3"};
 
     final private String TAB_FRAGMENT_TAG = "home";
     TabLayout tabLayout;
@@ -57,6 +65,15 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         viewPager.setAdapter(new FragmentPageAdapter(getSupportFragmentManager(), this));
 
+//        roomList = new ArrayList<>();
+//        roomList.add(new RoomListAdapter.Room("AB300"));
+//        roomList.add(new RoomListAdapter.Room("BC300"));
+//        roomList.add(new RoomListAdapter.Room("CD300"));
+//        roomList.add(new RoomListAdapter.Room("DE300"));
+
+
+
+
 //        if (getIntent().hasExtra(KEY_FRAGMENT_TAG)) {
 //            Bundle b = getIntent().getExtras();
 //            String fragmentTag = b.getString(KEY_FRAGMENT_TAG);
@@ -76,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
         repositoryAPs.refresh(getApplicationContext());
 
+
+
     }
 
 
@@ -93,44 +112,66 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    SearchView searchView;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+
+//        SearchManager searchManager =
+//                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        SearchView searchView =
+//                (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+//        searchView.setSearchableInfo(searchManager.
+//                getSearchableInfo(getComponentName()));
+
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(
+//                new ComponentName(getApplicationContext(), SearchResultsActivity.class)));
+//
+//        searchView.setSubmitButtonEnabled(true);
+
+
+
+//        searchView.setOnQueryTextListener(this);
+
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        int id = item.getItemId();
+//
+//        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+//        Fragment fragment = ((FragmentPageAdapter) viewPager.getAdapter()).getActualFragment();
+//
+//        switch (id) {
+//            case R.id.refresh:
+//
+//                if (fragment != null) {
+//                    ((IRefreshFragment) fragment).refresh();
+//                }
+//                break;
+//            case R.id.clear:
+//
+//                if (fragment != null && fragment instanceof TabFragment) {
+//                    ((TabFragment) fragment).clear();
+//                }
+//
+//                break;
+//
+//            case R.id.findMe:
+//                if (fragment != null && fragment instanceof TabFragment) {
+//                    ((TabFragment) fragment).findMe();
+//                }
+//                break;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
-        int id = item.getItemId();
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        Fragment fragment = ((FragmentPageAdapter) viewPager.getAdapter()).getActualFragment();
-
-        switch (id) {
-            case R.id.refresh:
-
-                if (fragment != null) {
-                    ((IRefreshFragment) fragment).refresh();
-                }
-                break;
-            case R.id.clear:
-
-                if (fragment != null && fragment instanceof TabFragment) {
-                    ((TabFragment) fragment).clear();
-                }
-
-                break;
-
-            case R.id.findMe:
-                if (fragment != null && fragment instanceof TabFragment) {
-                    ((TabFragment) fragment).findMe();
-                }
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

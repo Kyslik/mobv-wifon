@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,7 +26,7 @@ import java.util.List;
  * Created by vlado on 23.11.16.
  */
 
-public class TabFragment2 extends Fragment implements AdapterView.OnItemClickListener, IRefreshFragment {
+public class TabFragment2 extends Fragment implements AdapterView.OnItemClickListener {
 
     ListAdapter adapter;
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
@@ -33,6 +35,12 @@ public class TabFragment2 extends Fragment implements AdapterView.OnItemClickLis
     List<Location> listLocations = repositoryAPs.getLocationList();
     View view;
     ListView listView;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -87,9 +95,28 @@ public class TabFragment2 extends Fragment implements AdapterView.OnItemClickLis
 
     }
 
-    @Override
     public void refresh() {
+        ws = WebService.getInstance(getContext());
 
+        if(repositoryAPs.getLocationList() == null)
+        {
+            ws.getLocations(new WebService.OnLocationsReceived() {
+                @Override
+                public void onSuccess(List<Location> list) {
+                    repositoryAPs.setLocationList(list);
+
+                    listLocations.clear();
+                    listLocations.addAll(list);
+                    ((BaseAdapter)adapter).notifyDataSetChanged();
+
+                }
+
+                @Override
+                public void onFailure() {
+                    Toast.makeText(getContext(), "Server is not responding", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     @Override
@@ -97,23 +124,19 @@ public class TabFragment2 extends Fragment implements AdapterView.OnItemClickLis
         super.setMenuVisibility(visible);
         if (visible) {
 
-            ws = WebService.getInstance(getContext());
+            refresh();
 
-            if(repositoryAPs.getLocationList() == null)
-            {
-                ws.getLocations(new WebService.OnLocationsReceived() {
-                    @Override
-                    public void onSuccess(List<Location> list) {
-                        repositoryAPs.setLocationList(list);
+        }
+    }
 
-                        listLocations.clear();
-                        listLocations.addAll(list);
-                        ((BaseAdapter)adapter).notifyDataSetChanged();
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
 
-                    }
-                });
-            }
-
+        if (menu != null) {
+            menu.findItem(R.id.refresh).setVisible(false);
+            menu.findItem(R.id.clear).setVisible(false);
+            menu.findItem(R.id.findMe).setVisible(false);
         }
     }
 

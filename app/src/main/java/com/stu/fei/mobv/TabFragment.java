@@ -8,10 +8,12 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -33,7 +35,7 @@ import java.util.List;
  * Created by vlado on 23.11.16.
  */
 
-public class TabFragment extends Fragment implements Repository.OnChangeListener, IRefreshFragment, WebService.OnAccessPointsRegistered {
+public class TabFragment extends Fragment implements Repository.OnChangeListener, WebService.OnAccessPointsRegistered {
 
     View view;
     RepositoryCheckedAPs repositoryCheckedAPs = Repository.getInstance(RepositoryCheckedAPs.class);
@@ -50,7 +52,37 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
     ListAdapter wifiAdapter;
     ListView listView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    TextView searchingIndicator;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.refresh:
+
+                this.refresh();
+                break;
+            case R.id.clear:
+
+                this.clear();
+
+                break;
+
+            case R.id.findMe:
+                this.findMe();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     public void onRefresh() {
         if(swipeRefreshLayout != null){
 
@@ -113,6 +145,10 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
                 locationList = list;
 
             }
+            @Override
+            public void onFailure() {
+                Toast.makeText(getContext(), "Server is not responding", Toast.LENGTH_LONG).show();
+            }
         });
 
         final Spinner dropdown2 = (Spinner)view.findViewById(R.id.spinner2);
@@ -168,6 +204,7 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
             }
         });
 
+        searchingIndicator = (TextView) view.findViewById(R.id.searchingIndicator);
         repositoryAPs.registerOnChangeListener(this);
 
         return view;
@@ -206,6 +243,11 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
                     locationList.addAll(list);
 
                     register(level, block, toRegisterAccessPoints);
+                }
+
+                @Override
+                public void onFailure() {
+                    Toast.makeText(getContext(), "Server is not responding", Toast.LENGTH_LONG).show();
                 }
             });
         } else {
@@ -248,21 +290,25 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
     }
 
     public void findMe(){
+        searchingIndicator.setVisibility(View.VISIBLE);
         WebService ws = WebService.getInstance(getContext());
         if(accessPointsAround != null && accessPointsAround.size() > 0){
             ws.getSuggestion(accessPointsAround, new WebService.OnSuggestionsReceived() {
                 @Override
                 public void onSuccess(List<Location> list) {
                     setupActualLocation(list);
+                    searchingIndicator.setVisibility(View.INVISIBLE);
                 }
 
                 @Override
                 public void onFailure(String responseString) {
                     Toast t  = Toast.makeText(getActivity(), "Nieco je zle :(", Toast.LENGTH_LONG);
                     t.show();
+                    searchingIndicator.setVisibility(View.INVISIBLE);
                 }
             });
         } else {
+            searchingIndicator.setVisibility(View.INVISIBLE);
             Toast.makeText(getContext(), "Please scan your position first.", Toast.LENGTH_LONG).show();
         }
     }

@@ -75,6 +75,11 @@ public class LocationDetailActivity extends AppCompatActivity {
                 }
 
             }
+
+            @Override
+            public void onFailure() {
+                Toast.makeText(getApplicationContext(), "Server is not responding", Toast.LENGTH_LONG).show();
+            }
         });
 
 
