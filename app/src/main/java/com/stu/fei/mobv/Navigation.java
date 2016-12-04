@@ -15,7 +15,10 @@ public class Navigation {
 
     public static List navigate(Location actualLocation, String destination) {
 
-        Integer i = 0;
+
+        Integer i = 1;
+        String ac_block = actualLocation.block;
+        String ac_level = actualLocation.level;
         navigationSteps.clear();
 
         if(destination.contains("cpu")){
@@ -27,45 +30,54 @@ public class Navigation {
             destinationLocation.level = "0";
         }
 
+
         destinationLocation.block = destination.replaceAll("[^A-Za-z]+", "");
         destinationLocation.level = destination.replaceAll("[^0-9]", "");
         if(destinationLocation.level == ""){
             destinationLocation.level = "0";
         }
 
-        if(destinationLocation.block.contains("AB") || destinationLocation.block.contains("BC") || destinationLocation.block.contains("CD") || destinationLocation.block.contains("DE")){
-            if(!actualLocation.level.equals("0")) {
-                navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(actualLocation.block.toString(), "0"), "Pouzite vytah na prizemie"));
-            }
-            if(!actualLocation.block.equals(destinationLocation.block.substring(1))){
-                navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(destinationLocation.block.toString().substring(1), "0"), "Pokracuj na blok: "+ destinationLocation.block.toString().substring(1)));
-            }
-            navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(destinationLocation.block.toString().substring(1), "0"), "Vstup do miestnosti: "+ destination.toString()));
-        }
+        if(!destinationLocation.block.equals("")) {
 
-        else {
+            destinationLocation.block = destinationLocation.block.toUpperCase();
+            actualLocation.block = actualLocation.block.toUpperCase();
 
-            if (!actualLocation.block.equals(destinationLocation.block)) {
+            if (destinationLocation.block.contains("AB") || destinationLocation.block.contains("BC") || destinationLocation.block.contains("CD") || destinationLocation.block.contains("DE")) {
                 if (!actualLocation.level.equals("0")) {
-                    navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(actualLocation.block.toString().substring(0,1), "0"), "Pouzite vytah na prizemie"));
+                    navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(actualLocation.block.toString(), "0"), "Pouzite vytah na prizemie"));
                 }
-                navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(destinationLocation.block.toString().substring(0,1), "0"), "Pokracujte na blok " + destinationLocation.block.toString().substring(0,1)));
+                if (!actualLocation.block.equals(destinationLocation.block.substring(1))) {
+                    navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(destinationLocation.block.toString().substring(1), "0"), "Pokracuj na blok: " + destinationLocation.block.toString().substring(1)));
+                }
+                navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(destinationLocation.block.toString().substring(1), "0"), "Vstup do miestnosti: " + destination.toString()));
+            } else {
 
-                actualLocation.block = destinationLocation.block;
-                actualLocation.level = "0";
+                if (!actualLocation.block.equals(destinationLocation.block)) {
+                    if (!actualLocation.level.equals("0")) {
+                        navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(actualLocation.block.toString().substring(0, 1), "0"), "Pouzite vytah na prizemie"));
+                    }
+                    navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(destinationLocation.block.toString().substring(0, 1), "0"), "Pokracujte na blok " + destinationLocation.block.toString().substring(0, 1)));
+
+                    actualLocation.block = destinationLocation.block;
+                    actualLocation.level = "0";
+                }
+
+                if (!actualLocation.level.equals(destinationLocation.level.substring(0, 1))) {
+                    navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(destinationLocation.block.toString().substring(0, 1), destinationLocation.level.toString().substring(0, 1)), "Chodte na " + destinationLocation.level.toString().substring(0, 1) + " poschodie "));
+                }
+
+                navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(destinationLocation.block.toString(), destinationLocation.level.toString().substring(0, 1)), "Chodte do miestnosti: " + destination.toString()));
+
             }
-
-            if (!actualLocation.level.equals(destinationLocation.level.substring(0,1))) {
-                navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(destinationLocation.block.toString().substring(0,1), destinationLocation.level.toString().substring(0,1)), "Chodte na " + destinationLocation.level.toString().substring(0,1)+ " poschodie "));
-            }
-
-            navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(destinationLocation.block.toString(), destinationLocation.level.toString().substring(0,1)), "Chodte do miestnosti: " + destination.toString()));
 
         }
 
-        if(navigationSteps.isEmpty()){
-            navigationSteps.add(new NavigationFragmentAdapter.Step(i++, getLabel(actualLocation.block.toString(), actualLocation.level.toString()), "Nepodarilo sa najst miestnost."));
+        if (navigationSteps.isEmpty()) {
+            navigationSteps.add(new NavigationFragmentAdapter.Step(i++, "Nepodarilo sa najst miestnost.", " "));
         }
+
+        actualLocation.block  = ac_block;
+        actualLocation.level = ac_level;
 
         return navigationSteps;
     }

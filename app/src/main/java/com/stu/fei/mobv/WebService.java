@@ -38,14 +38,17 @@ public class WebService {
 
     interface OnAccessPointsReceived {
         public void onSuccess(List<AccessPoint> list);
+        public void onFailure();
     }
 
     interface OnLocationsReceived {
         public void onSuccess(List<Location> list);
+        public void onFailure();
     }
 
     interface OnLocationReceived {
         public void onSuccess(Location location);
+        public void onFailure();
     }
 
     interface OnAccessPointsRegistered {
@@ -200,6 +203,15 @@ public class WebService {
                 Log.v("WS", "onFailure");
                 Log.v("WS", "statusCode " + statusCode);
                 Log.v("WS", "res " + responseString);
+                handler.onFailure();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject){
+                Log.v("WS", "onFailure");
+                Log.v("WS", "statusCode " + statusCode);
+                Log.v("WS", "res " + jsonObject);
+                handler.onFailure();
             }
         });
 
@@ -245,6 +257,15 @@ public class WebService {
                 Log.v("WS", "onFailure");
                 Log.v("WS", "statusCode " + statusCode);
                 Log.v("WS", "res " + responseString);
+                handler.onFailure();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject){
+                Log.v("WS", "onFailure");
+                Log.v("WS", "statusCode " + statusCode);
+                Log.v("WS", "res " + jsonObject);
+                handler.onFailure();
             }
         });
     }
@@ -269,6 +290,14 @@ public class WebService {
                         Log.v("WS", "onFailure");
                         Log.v("WS", "statusCode " + statusCode);
                         Log.v("WS", "res " + responseString);
+                        handler.onFailure();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject){
+                        Log.v("WS", "onFailure");
+                        Log.v("WS", "statusCode " + statusCode);
+                        Log.v("WS", "res " + jsonObject);
                         handler.onFailure();
                     }
                 }
@@ -319,6 +348,7 @@ public class WebService {
                         Log.v("WS", "res " + responseString);
                         handler.onFailure();
                     }
+
                 }
         );
 

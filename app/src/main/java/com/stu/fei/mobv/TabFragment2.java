@@ -110,6 +110,11 @@ public class TabFragment2 extends Fragment implements AdapterView.OnItemClickLis
                     ((BaseAdapter)adapter).notifyDataSetChanged();
 
                 }
+
+                @Override
+                public void onFailure() {
+                    Toast.makeText(getContext(), "Server is not responding", Toast.LENGTH_LONG).show();
+                }
             });
         }
     }

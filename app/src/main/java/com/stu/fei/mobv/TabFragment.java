@@ -145,6 +145,10 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
                 locationList = list;
 
             }
+            @Override
+            public void onFailure() {
+                Toast.makeText(getContext(), "Server is not responding", Toast.LENGTH_LONG).show();
+            }
         });
 
         final Spinner dropdown2 = (Spinner)view.findViewById(R.id.spinner2);
@@ -239,6 +243,11 @@ public class TabFragment extends Fragment implements Repository.OnChangeListener
                     locationList.addAll(list);
 
                     register(level, block, toRegisterAccessPoints);
+                }
+
+                @Override
+                public void onFailure() {
+                    Toast.makeText(getContext(), "Server is not responding", Toast.LENGTH_LONG).show();
                 }
             });
         } else {

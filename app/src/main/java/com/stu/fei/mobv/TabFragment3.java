@@ -41,6 +41,8 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
     List<AccessPoint> accessPointsAround = repositoryAPs.getList();
 
+    List<Location> locationsList = repositoryAPs.getLocationList();
+
     WebService ws;
 
     Location actualLocation = null;
@@ -60,6 +62,7 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.tab_fragment3, container, false);
+        searchingIndicator = (TextView) view.findViewById(R.id.searchingIndicator);
 
         listView = (ListView) view.findViewById(R.id.listView3);
 
@@ -94,8 +97,6 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
         adapter = new NavigationFragmentAdapter(getActivity(), navigationSteps);
 
         listView.setAdapter(adapter);
-
-        searchingIndicator = (TextView) view.findViewById(R.id.searchingIndicator);
 
 
         searchForRoomTextView.addTextChangedListener(new TextWatcher() {
@@ -179,7 +180,6 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
             ws = WebService.getInstance(getContext());
 
             if(LOCATIONS.size() == 0){
-                List<Location> locationsList = repositoryAPs.getLocationList();
                 if(locationsList != null){
                     for(Location location: locationsList){
                         LOCATIONS.add(location.block + location.level + "XX");
@@ -201,7 +201,10 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
     }
 
     private void getSuggestions(){
-        searchingIndicator.setVisibility(View.VISIBLE);
+        if(searchingIndicator != null){
+            searchingIndicator.setVisibility(View.VISIBLE);
+        }
+
         if(repositoryAPs.getSuggestions() == null)
         {
             ws.getSuggestion(repositoryAPs.getList(), new WebService.OnSuggestionsReceived() {
@@ -212,7 +215,9 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
 
                 @Override
                 public void onFailure(String responseString) {
-                    searchingIndicator.setVisibility(View.INVISIBLE);
+                    if(searchingIndicator != null) {
+                        searchingIndicator.setVisibility(View.INVISIBLE);
+                    }
                     Toast t  = Toast.makeText(getActivity(), "Nieco je zle :(", Toast.LENGTH_LONG);
                     t.show();
                 }
@@ -221,7 +226,9 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
     }
 
     private void setupActualLocation(List<Location> list){
-        searchingIndicator.setVisibility(View.INVISIBLE);
+        if(searchingIndicator != null) {
+            searchingIndicator.setVisibility(View.INVISIBLE);
+        }
         if(list != null && list.size() > 0){
             actualLocation = list.get(0);
             locationText.setText("Nachádzate sa na: " + actualLocation.getName());
