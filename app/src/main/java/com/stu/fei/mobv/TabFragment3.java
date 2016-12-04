@@ -7,8 +7,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -22,11 +27,14 @@ import java.util.List;
  * Created by vlado on 23.11.16.
  */
 
-public class TabFragment3 extends Fragment implements IRefreshFragment, Repository.OnChangeListener {
+public class TabFragment3 extends Fragment implements Repository.OnChangeListener {
+
+    private static List<String> LOCATIONS = new LinkedList<>();
 
     View view;
     TextView locationText;
     ListView listView;
+    TextView searchingIndicator;
 
     RepositoryAPs repositoryAPs = Repository.getInstance(RepositoryAPs.class);
     List<AccessPoint> accessPointsAround = repositoryAPs.getList();
@@ -38,6 +46,12 @@ public class TabFragment3 extends Fragment implements IRefreshFragment, Reposito
     ListAdapter adapter;
 
     List<NavigationFragmentAdapter.Step> navigationSteps;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -52,6 +66,14 @@ public class TabFragment3 extends Fragment implements IRefreshFragment, Reposito
 //        if(accessPointsAround == null){
 //            accessPointsAround = new LinkedList<>();
 //        }
+
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, LOCATIONS);
+        AutoCompleteTextView textView = (AutoCompleteTextView) view
+                .findViewById(R.id.search_for_room);
+        textView.setAdapter(arrayAdapter);
+
 
         locationText = (TextView) view.findViewById(R.id.locationText);
 
@@ -78,15 +100,34 @@ public class TabFragment3 extends Fragment implements IRefreshFragment, Reposito
 
         listView.setAdapter(adapter);
 
+        searchingIndicator = (TextView) view.findViewById(R.id.searchingIndicator);
+
         return view;
     }
 
     @Override
-    public void refresh() {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
 
+        if (menu != null) {
+            menu.findItem(R.id.refresh).setVisible(false);
+            menu.findItem(R.id.clear).setVisible(false);
+        }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.findMe:
+                this.getSuggestions();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void setMenuVisibility(final boolean visible) {
         super.setMenuVisibility(visible);
@@ -94,15 +135,33 @@ public class TabFragment3 extends Fragment implements IRefreshFragment, Reposito
 
             ws = WebService.getInstance(getContext());
 
+            if(LOCATIONS.size() == 0){
+                List<Location> locationsList = repositoryAPs.getLocationList();
+                if(locationsList != null){
+                    for(Location location: locationsList){
+                        LOCATIONS.add(location.block + location.level + "XX");
+                    }
+                }
+                LOCATIONS.add("AB300");
+                LOCATIONS.add("BC300");
+                LOCATIONS.add("CD300");
+                LOCATIONS.add("DE300");
+                LOCATIONS.add("AB150");
+                LOCATIONS.add("BC150");
+                LOCATIONS.add("CD150");
+                LOCATIONS.add("DE150");
+            }
+
             getSuggestions();
 
         }
     }
 
     private void getSuggestions(){
+        searchingIndicator.setVisibility(View.VISIBLE);
         if(repositoryAPs.getSuggestions() == null)
         {
-            ws.getSuggestion(accessPointsAround, new WebService.OnSuggestionsReceived() {
+            ws.getSuggestion(repositoryAPs.getList(), new WebService.OnSuggestionsReceived() {
                 @Override
                 public void onSuccess(List<Location> list) {
                     setupActualLocation(list);
@@ -110,6 +169,7 @@ public class TabFragment3 extends Fragment implements IRefreshFragment, Reposito
 
                 @Override
                 public void onFailure(String responseString) {
+                    searchingIndicator.setVisibility(View.INVISIBLE);
                     Toast t  = Toast.makeText(getActivity(), "Nieco je zle :(", Toast.LENGTH_LONG);
                     t.show();
                 }
@@ -118,6 +178,7 @@ public class TabFragment3 extends Fragment implements IRefreshFragment, Reposito
     }
 
     private void setupActualLocation(List<Location> list){
+        searchingIndicator.setVisibility(View.INVISIBLE);
         if(list != null && list.size() > 0){
             actualLocation = list.get(0);
             locationText.setText("Nachádzate sa na: " + actualLocation.getName());
