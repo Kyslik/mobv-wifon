@@ -123,11 +123,18 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
     private void navigateForNewRoom(String roomText){
 
         if(actualLocation != null){
-            navigationSteps.clear();
-            List<NavigationFragmentAdapter.Step> newSteps = Navigation.navigate(actualLocation, roomText);
-            navigationSteps.addAll(newSteps);
 
-            ((BaseAdapter)adapter).notifyDataSetChanged();
+            if(!roomText.equals("")) {
+                navigationSteps.clear();
+                List<NavigationFragmentAdapter.Step> newSteps = Navigation.navigate(actualLocation, roomText);
+                navigationSteps.addAll(newSteps);
+
+                ((BaseAdapter)adapter).notifyDataSetChanged();
+            } else {
+                navigationSteps.clear();
+                ((BaseAdapter)adapter).notifyDataSetChanged();
+            }
+
         } else {
             Toast.makeText(getContext(), "Please scan your position first.", Toast.LENGTH_LONG).show();
         }
