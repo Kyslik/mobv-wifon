@@ -15,9 +15,11 @@ import java.util.List;
  */
 public class LocationDetailArrayAdapter extends ArrayAdapter<AccessPoint> {
 
-    LocationDetailArrayAdapter(Context context, List<AccessPoint> wifi) {
-
+    List<AccessPoint> accessPointsAround = null;
+    LocationDetailArrayAdapter(Context context, List<AccessPoint> wifi, List<AccessPoint> accessPointsAround) {
         super(context, R.layout.list_item, wifi );
+
+        this.accessPointsAround = accessPointsAround;
     }
 
     @Override
@@ -33,7 +35,22 @@ public class LocationDetailArrayAdapter extends ArrayAdapter<AccessPoint> {
         bssidTextView.setText(wifiInfo.bssid);
 
         final CheckBox checkBox = (CheckBox) customView.findViewById(R.id.checkBox);
-        checkBox.setEnabled(false);
+
+        if(accessPointsAround.size() == 0){
+            checkBox.setEnabled(false);
+        } else {
+            checkBox.setEnabled(true);
+            checkBox.setChecked(false);
+            for(AccessPoint ap: accessPointsAround){
+                if(ap.bssid.equals(wifiInfo.bssid)){
+                    checkBox.setChecked(true);
+                    break;
+                }
+            }
+
+            checkBox.setClickable(false);
+        }
+
 
 
         return customView;

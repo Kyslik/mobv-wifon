@@ -9,6 +9,8 @@ import org.json.JSONObject;
  * Created by miroslav.adamec on 14.11.2016.
  */
 public class AccessPoint {
+
+    public Integer id;
     public String ssid;
     public String bssid;
     public String capabilities;
@@ -34,6 +36,7 @@ public class AccessPoint {
 
         try {
             AccessPoint accessPoint = new AccessPoint();
+            accessPoint.id = object.getInt("id");
             accessPoint.ssid = object.getString("ssid");
 
             accessPoint.bssid = object.getString("bssid");
