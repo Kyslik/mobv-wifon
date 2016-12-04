@@ -222,6 +222,8 @@ public class TabFragment3 extends Fragment implements Repository.OnChangeListene
                     t.show();
                 }
             });
+        } else {
+            setupActualLocation(repositoryAPs.getSuggestions());
         }
     }
 
